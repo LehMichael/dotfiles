@@ -45,7 +45,7 @@ return { -- Autocompletion
         "hrsh7th/cmp-path",
         "hrsh7th/cmp-nvim-lsp-signature-help",
         "onsails/lspkind.nvim",
-        { "zbirenbaum/copilot-cmp", opts = {} },
+        -- { "zbirenbaum/copilot-cmp", opts = {} },
     },
     config = function()
         -- See `:help cmp`
@@ -107,17 +107,33 @@ return { -- Autocompletion
                 --  completions whenever it has completion options available.
                 ["<C-Space>"] = cmp.mapping.complete({}),
 
-                ["<CR>"] = cmp.mapping(function(fallback)
+                ["<Esc>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then
-                        if luasnip.expandable() then
-                            luasnip.expand()
-                        else
-                            cmp.confirm({
-                                select = false,
-                            })
-                        end
+                        cmp.close()
                     else
                         fallback()
+                    end
+                end, { "i", "s", "n" }),
+
+                ["<CR>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        if cmp.get_active_entry() == nil then
+                            cmp.close()
+                        else
+                            if luasnip.expandable() then
+                                luasnip.expand()
+                            else
+                                cmp.confirm({
+                                    select = false,
+                                })
+                            end
+                        end
+                    else
+                        if require("copilot.suggestion").is_visible() then
+                            require("copilot.suggestion").accept()
+                        else
+                            fallback()
+                        end
                     end
                 end),
 
@@ -155,7 +171,7 @@ return { -- Autocompletion
                 { name = "path" },
                 { name = "nvim_lsp_signature_help" },
                 -- Copilot Source
-                { name = "copilot", group_index = 2 },
+                -- { name = "copilot", group_index = 2 },
             },
         })
     end,

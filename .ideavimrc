@@ -4,17 +4,21 @@ Plug 'tpope/vim-surround'
 Plug 'machakann/vim-highlightedyank'
 Plug 'chrisbra/matchit'
 Plug 'tpope/vim-commentary'
+Plug 'preservim/nerdtree'
+
+set rtp+=/opt/homebrew/opt/fzf
 
 let mapleader =" "
 
-set scrolloff=8
+set scrolloff=0
+autocmd BufRead,BufNewFile *.ipynb set scrolloff=0
+
 set incsearch
 set relativenumber
 set ignorecase
 set smartcase
 set incsearch
 set hlsearch
-set scrolloff=10
 nmap n nzz
 nmap N Nzz
 map <leader>b <Action>(ToggleLineBreakpoint)
@@ -36,3 +40,11 @@ nnoremap <leader>y "*y
 vnoremap <leader>y "*y
 nnoremap <leader>Y "*Y
 nnoremap <Esc> :nohlsearch<CR>
+
+map <leader>f <Action>(ReformatCode)
+map <leader>sf <Action>(SearchEverywhere)
+map grn <Action>(RenameElement)
+map grr <Action>(FindUsages)
+map gra <Action>(ShowIntentionActions)
+map <Tab> <Action>(NextTab)
+map <S-Tab> <Action>(PreviousTab)

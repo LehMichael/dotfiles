@@ -21,3 +21,6 @@ KEYTIMEOUT=1
 # then
 # /opt/homebrew/bin/tmux new -As0
 # fi
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
