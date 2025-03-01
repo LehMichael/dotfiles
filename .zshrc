@@ -1,6 +1,18 @@
-fpath+=("$(brew --prefix)/share/zsh/site-functions")
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $(brew --prefix)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
+if [[ $(scutil --get LocalHostName) = "Michaels-MacBook-Pro" ]]; then
+    fpath+=("$(brew --prefix)/share/zsh/site-functions")
+
+    source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source $(brew --prefix)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+else
+    fpath+=($HOME/.zsh/pure)
+
+    source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+fi
+
+source <(bob complete zsh)
+
 bindkey -M menuselect '\r' .accept-line
 bindkey -M menuselect  '^[[D' .backward-char  '^[OD' .backward-char
 bindkey -M menuselect  '^[[C'  .forward-char  '^[OC'  .forward-char

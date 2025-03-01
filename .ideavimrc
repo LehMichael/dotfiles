@@ -5,19 +5,28 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'chrisbra/matchit'
 Plug 'tpope/vim-commentary'
 Plug 'preservim/nerdtree'
+Plug 'justinmk/vim-sneak'
+
+set NERDTree
+
+set mini-ai
+
+set which-key
+set notimeout
+
+set peekaboo
 
 set rtp+=/opt/homebrew/opt/fzf
 
 let mapleader =" "
 
 set scrolloff=0
-autocmd BufRead,BufNewFile *.ipynb set scrolloff=0
 
+set ideajoin
 set incsearch
 set relativenumber
 set ignorecase
 set smartcase
-set incsearch
 set hlsearch
 nmap n nzz
 nmap N Nzz
@@ -36,15 +45,34 @@ xnoremap <leader>p "_dP
 nnoremap <leader>d "_d
 vnoremap <leader>d "_d
 
+nnoremap <leader>p "*p
 nnoremap <leader>y "*y
 vnoremap <leader>y "*y
 nnoremap <leader>Y "*Y
 nnoremap <Esc> :nohlsearch<CR>
 
+
 map <leader>f <Action>(ReformatCode)
-map <leader>sf <Action>(SearchEverywhere)
+map <leader>sf <Action>(GotoFile)
+map <leader>sg <Action>(TextSearchAction)
 map grn <Action>(RenameElement)
 map grr <Action>(FindUsages)
 map gra <Action>(ShowIntentionActions)
-map <Tab> <Action>(NextTab)
-map <S-Tab> <Action>(PreviousTab)
+
+" map <Tab> <Action>(NextTab)
+" map <S-Tab> <Action>(PreviousTab)
+
+" IdeaVim: track action IDs
+map <A-1> <Action>(GoToTab1)
+map <A-2> <Action>(GoToTab2)
+map <A-3> <Action>(GoToTab3)
+map <A-4> <Action>(GoToTab4)
+map <A-5> <Action>(GoToTab5)
+map <A-6> <Action>(GoToTab6)
+map <A-7> <Action>(GoToTab7)
+map <A-8> <Action>(GoToTab8)
+map <A-9> <Action>(GoToTab9)
+map <A-w> <Action>(CloseContent)
+
+let g:NERDTreeQuitOnOpen='test'
+map - <Action>(ActivateProjectToolWindow)

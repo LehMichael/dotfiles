@@ -6,7 +6,11 @@ return {
 
     init = function()
         require("catppuccin").setup({
-            -- flavour = "mocha",
+            flavour = "auto", -- latte, frappe, macchiato, mocha
+            background = { -- :h background
+                light = "latte",
+                dark = "mocha",
+            },
             -- transparent_background = true,
             custom_highlights = function(colors)
                 return {
@@ -24,5 +28,6 @@ return {
                 notify = true,
             },
         })
+        vim.cmd.colorscheme("catppuccin")
     end,
 }
