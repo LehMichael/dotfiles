@@ -3,7 +3,10 @@ return {
     dependencies = {
         "nvim-tree/nvim-web-devicons",
         { "theprimeagen/harpoon" },
-        { "mike-jl/harpoonEx", dev = true },
+        {
+            "mike-jl/harpoonEx",
+            -- dev = true
+        },
     },
 
     opts = {

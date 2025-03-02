@@ -1,5 +1,5 @@
 
-if [[ $(scutil --get LocalHostName) = "Michaels-MacBook-Pro" ]]; then
+if [ -x "$(command -v scutil)" ] && [[ $(scutil --get LocalHostName) = "Michaels-MacBook-Pro" ]]; then
     fpath+=("$(brew --prefix)/share/zsh/site-functions")
 
     source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -11,7 +11,9 @@ else
     source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 fi
 
-source <(bob complete zsh)
+if [ -x "$(command -v bob)" ]; then
+    source <(bob complete zsh)
+fi
 
 bindkey -M menuselect '\r' .accept-line
 bindkey -M menuselect  '^[[D' .backward-char  '^[OD' .backward-char

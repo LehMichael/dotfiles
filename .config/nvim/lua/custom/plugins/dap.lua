@@ -95,6 +95,16 @@ return {
         local dap = require("dap")
         local dapui = require("dapui")
 
+        local ensure_installed = {
+            "codelldb",
+        }
+
+        if vim.fn.executable("go") == 1 then
+            vim.list_extend(ensure_installed, {
+                "delve",
+            })
+        end
+
         require("mason-nvim-dap").setup({
             -- Makes a best effort to setup the various debuggers with
             -- reasonable debug configurations
@@ -113,11 +123,7 @@ return {
 
             -- You'll need to check that you have the required things installed
             -- online, please don't ask me how to install them :)
-            ensure_installed = {
-                -- Update this to ensure that you have the debuggers for the langs you want
-                "delve",
-                "codelldb",
-            },
+            ensure_installed = ensure_installed,
         })
 
         vim.keymap.set("n", "<leader>B", function()

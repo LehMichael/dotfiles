@@ -6,7 +6,7 @@ return {
         "nvim-telescope/telescope.nvim",
         {
             "mike-jl/harpoonEx",
-            dev = true,
+            -- dev = true,
             opts = {
                 reload_on_dir_change = true,
                 reload_on_tab_enter = true,

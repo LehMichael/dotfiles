@@ -103,8 +103,9 @@ vim.keymap.set("x", "<Leader>p", '"_dP')
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
 -- use leader y to yank to system clipboard
-vim.keymap.set({ "n", "v" }, "<leader>y", [["*y]])
-vim.keymap.set("n", "<leader>Y", [["*Y]])
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
+vim.keymap.set("n", "<leader>Y", [["+Y]])
+vim.keymap.set("v", "<leader>y", [["+y]])
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true

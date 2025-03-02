@@ -8,7 +8,7 @@ return { -- LSP Configuration & Plugins
 
         -- Useful status updates for LSP.
         -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-        { "j-hui/fidget.nvim",       opts = {} },
+        { "j-hui/fidget.nvim", opts = {} },
     },
     config = function()
         vim.lsp.set_log_level("off")
@@ -184,12 +184,12 @@ return { -- LSP Configuration & Plugins
         --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
         local servers = {
             clangd = {
-                cmd = {
-                    "/Users/michael/src/esp-clang/bin/clangd",
-                    "--offset-encoding=utf-16",
-                    "--background-index",
-                    "--query-driver=/Users/michael/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin/xtensa-esp32-elf-g*,/opt/homebrew/bin/arm-none-eabi-g*",
-                },
+                -- cmd = {
+                --     "/Users/michael/src/esp-clang/bin/clangd",
+                --     "--offset-encoding=utf-16",
+                --     "--background-index",
+                --     "--query-driver=/Users/michael/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin/xtensa-esp32-elf-g*,/opt/homebrew/bin/arm-none-eabi-g*",
+                -- },
                 settings = {
                     clangd = {
                         InlayHints = {
@@ -202,22 +202,6 @@ return { -- LSP Configuration & Plugins
                     },
                 },
             },
-            gopls = {
-                settings = {
-                    gopls = {
-                        hints = {
-                            rangeVariableTypes = true,
-                            parameterNames = true,
-                            constantValues = true,
-                            assignVariableTypes = true,
-                            compositeLiteralFields = true,
-                            compositeLiteralTypes = true,
-                            functionTypeParameters = true,
-                        },
-                    },
-                },
-            },
-            pyright = {},
             -- rust_analyzer = {},
             -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
             --
@@ -227,25 +211,6 @@ return { -- LSP Configuration & Plugins
             templ = {},
             -- python-lsp-server = {},
             --
-            html = {},
-            htmx = {},
-            cssls = {},
-            -- tailwindcss = {},
-            ts_ls = {},
-            sqls = {
-                settings = {
-                    sqls = {
-                        lowercaseKeywords = false,
-                        connections = {
-                            {
-                                driver = "sqlite3",
-                                dataSourceName = "file:/Users/michael/src/priceCalc/test123.db",
-                            },
-                        },
-                    },
-                },
-            },
-            jsonls = {},
 
             lua_ls = {
                 -- cmd = {...},
@@ -269,6 +234,49 @@ return { -- LSP Configuration & Plugins
             },
         }
 
+        if vim.fn.executable("node") == 1 then
+            servers.html = {}
+            servers.cssls = {}
+            servers.ts_ls = {}
+            servers.jsonls = {}
+            servers.pyright = {}
+        end
+
+        if vim.fn.executable("go") == 1 then
+            servers.gopls = {
+                settings = {
+                    gopls = {
+                        hints = {
+                            rangeVariableTypes = true,
+                            parameterNames = true,
+                            constantValues = true,
+                            assignVariableTypes = true,
+                            compositeLiteralFields = true,
+                            compositeLiteralTypes = true,
+                            functionTypeParameters = true,
+                        },
+                    },
+                },
+            }
+            servers.sqls = {
+                settings = {
+                    sqls = {
+                        lowercaseKeywords = false,
+                        connections = {
+                            {
+                                driver = "sqlite3",
+                                dataSourceName = "file:/Users/michael/src/priceCalc/test123.db",
+                            },
+                        },
+                    },
+                },
+            }
+        end
+
+        if vim.fn.executable("cargo") == 1 then
+            servers.htmx = {}
+        end
+
         -- Ensure the servers and tools above are installed
         --  To check the current status of installed tools and/or manually install
         --  other tools, you can run
@@ -284,6 +292,19 @@ return { -- LSP Configuration & Plugins
             -- "clangd",
             -- "templ",
         })
+
+        -- vim.print(vim.fn.system("arch"))
+        if vim.fn.system("arch"):find("aarch64") then
+            for k, v in ipairs(ensure_installed) do
+                if v == "clangd" then
+                    table.remove(ensure_installed, k)
+                    break
+                end
+            end
+            -- ensure_installed["clangd"] = nil
+            -- vim.print(ensure_installed)
+        end
+
         require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
         require("mason-lspconfig").setup({
@@ -300,14 +321,16 @@ return { -- LSP Configuration & Plugins
             },
         })
 
-        require("lspconfig").sqls.setup({
-            on_attach = function(client, bufnr)
-                client.server_capabilities.documentFormattingProvider = false
-                client.server_capabilities.documentRangeFormattingProvider = false
-                require("sqls").on_attach(client, bufnr) -- require sqls.nvim
-            end,
-            settings = servers.sqls.settings,
-            capabilities = capabilities,
-        })
+        if servers.sqls ~= nil then
+            require("lspconfig").sqls.setup({
+                on_attach = function(client, bufnr)
+                    client.server_capabilities.documentFormattingProvider = false
+                    client.server_capabilities.documentRangeFormattingProvider = false
+                    require("sqls").on_attach(client, bufnr) -- require sqls.nvim
+                end,
+                settings = servers.sqls.settings,
+                capabilities = capabilities,
+            })
+        end
     end,
 }
