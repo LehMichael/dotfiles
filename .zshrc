@@ -1,13 +1,20 @@
 
-if [ -x "$(command -v scutil)" ] && [[ $(scutil --get LocalHostName) = "Michaels-MacBook-Pro" ]]; then
+if [ -x "$(command -v brew)" ]; then
     fpath+=("$(brew --prefix)/share/zsh/site-functions")
 
     source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     source $(brew --prefix)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
-else
-    fpath+=($HOME/.zsh/pure)
+fi
 
+if test -d ~/.zsh/pure; then
+    fpath+=($HOME/.zsh/pure)
+fi
+
+if test -d ~/.zsh/zsh-autosuggestions; then
     source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+if test -d ~/.zsh/zsh-autocomplete; then
     source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 fi
 
@@ -35,6 +42,10 @@ KEYTIMEOUT=1
 # then
 # /opt/homebrew/bin/tmux new -As0
 # fi
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=1000
+setopt SHARE_HISTORY
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 

@@ -1,12 +1,11 @@
+for i = 1, 9 do
+    vim.keymap.set("n", "<M-" .. i .. ">", "<cmd>LualineBuffersJump! " .. i .. "<CR>")
+end
+
 return {
     "nvim-lualine/lualine.nvim",
     dependencies = {
         "nvim-tree/nvim-web-devicons",
-        { "theprimeagen/harpoon" },
-        {
-            "mike-jl/harpoonEx",
-            -- dev = true
-        },
     },
 
     opts = {
@@ -26,12 +25,12 @@ return {
         tabline = {
             lualine_a = {
                 {
-                    "harpoons",
+                    "buffers",
                     show_filename_only = false, -- Shows shortened relative path when set to false.
                     -- hide_filename_extension = false, -- Hide filename extension when set to true.
                     -- show_modified_status = true, -- Shows indicator when the buffer is modified.
                     --
-                    mode = 4, -- 0: Shows buffer name
+                    mode = 2, -- 0: Shows buffer name
                     -- -- 1: Shows buffer index
                     -- -- 2: Shows buffer name + buffer index
                     -- -- 3: Shows buffer number

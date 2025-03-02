@@ -1,10 +1,19 @@
 
-if [[ $(scutil --get LocalHostName) = "Michaels-MacBook-Pro" ]]; then
+if [ -x "$(command -v brew)" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
-
-    export PATH=~/bin:$PATH:$(go env GOPATH)/bin:~/.local/share/bob/nvim-bin
     export HOMEBREW_BUNDLE_FILE=~/.config/homebrew/Brewfile
-    export PICO_SDK_PATH=~/src/pico-sdk
-else
-    export PATH=~/bin:~/.local/share/bob/nvim-bin:$PATH
 fi
+
+if test -d ~/src/pico-sdk; then
+    export PICO_SDK_PATH=~/src/pico-sdk
+fi
+
+if [ -x "$(command -v go)" ]; then
+    export PATH=$PATH:$(go env GOPATH)/bin
+fi
+
+if [ -x "$(command -v bob)" ]; then
+    export PATH=~/.local/share/bob/nvim-bin:$PATH
+fi
+
+export PATH=~/bin:$PATH
