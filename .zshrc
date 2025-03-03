@@ -1,3 +1,4 @@
+setopt interactive_comments
 
 if [ -x "$(command -v brew)" ]; then
     fpath+=("$(brew --prefix)/share/zsh/site-functions")

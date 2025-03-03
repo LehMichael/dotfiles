@@ -11,7 +11,7 @@ return { -- LSP Configuration & Plugins
         { "j-hui/fidget.nvim", opts = {} },
     },
     config = function()
-        vim.lsp.set_log_level("off")
+        vim.lsp.set_log_level("debug")
         -- Brief aside: **What is LSP?**
         --
         -- LSP is an initialism you've probably heard, but might not understand what it is.
@@ -184,12 +184,16 @@ return { -- LSP Configuration & Plugins
         --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
         local servers = {
             clangd = {
-                -- cmd = {
-                --     "/Users/michael/src/esp-clang/bin/clangd",
-                --     "--offset-encoding=utf-16",
-                --     "--background-index",
-                --     "--query-driver=/Users/michael/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin/xtensa-esp32-elf-g*,/opt/homebrew/bin/arm-none-eabi-g*",
-                -- },
+                cmd = {
+                    "clangd",
+                    "--offset-encoding=utf-16",
+                    "--background-index",
+                    "--clang-tidy",
+                    -- "--query-driver=/Users/michael/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin/xtensa-esp32-elf-g*,/opt/homebrew/bin/arm-none-eabi-g*",
+                },
+                root_dir = function(fname)
+                    return vim.fs.dirname(fname)
+                end,
                 settings = {
                     clangd = {
                         InlayHints = {
@@ -298,11 +302,14 @@ return { -- LSP Configuration & Plugins
             for k, v in ipairs(ensure_installed) do
                 if v == "clangd" then
                     table.remove(ensure_installed, k)
+                    local server = servers[v]
+                    server.capabilities =
+                        vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+
+                    require("lspconfig")[v].setup(server)
                     break
                 end
             end
-            -- ensure_installed["clangd"] = nil
-            -- vim.print(ensure_installed)
         end
 
         require("mason-tool-installer").setup({ ensure_installed = ensure_installed })

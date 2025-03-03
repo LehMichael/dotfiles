@@ -10,12 +10,12 @@ local config = {}
 config.font = wezterm.font("JetBrainsMono Nerd Font", { weight = "DemiBold" })
 -- config.front_end = "OpenGL"
 -- config.font = wezterm.font("JetBrains Mono", { weight = "DemiBold" })
-config.font_size = 15
+config.font_size = 11
 -- config.freetype_render_target = "HorizontalLcd"
 config.cell_width = 0.9
 
-config.window_decorations = "RESIZE"
-config.tab_bar_at_bottom = true
+-- config.window_decorations = "RESIZE"
+-- config.tab_bar_at_bottom = true
 -- config.color_scheme = "Catppuccin Mocha"
 
 -- wezterm.gui is not available to the mux server, so take care to
