@@ -182,30 +182,8 @@ return { -- LSP Configuration & Plugins
         --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
         --  - settings (table): Override the default settings passed when initializing the server.
         --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
         local servers = {
-            clangd = {
-                cmd = {
-                    "clangd",
-                    "--offset-encoding=utf-16",
-                    "--background-index",
-                    "--clang-tidy",
-                    -- "--query-driver=/Users/michael/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin/xtensa-esp32-elf-g*,/opt/homebrew/bin/arm-none-eabi-g*",
-                },
-                root_dir = function(fname)
-                    return vim.fs.dirname(fname)
-                end,
-                settings = {
-                    clangd = {
-                        InlayHints = {
-                            Designators = true,
-                            Enabled = true,
-                            ParameterNames = true,
-                            DeducedTypes = true,
-                        },
-                        fallbackFlags = { "-std=c++20" },
-                    },
-                },
-            },
             -- rust_analyzer = {},
             -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
             --
@@ -238,10 +216,65 @@ return { -- LSP Configuration & Plugins
             },
         }
 
+        if vim.fn.executable("clangd") then
+            servers.clangd = {
+                cmd = {
+                    "clangd",
+                    "--offset-encoding=utf-16",
+                    "--background-index",
+                    "--clang-tidy",
+                    -- "--query-driver=/Users/michael/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin/xtensa-esp32-elf-g*,/opt/homebrew/bin/arm-none-eabi-g*",
+                },
+                root_dir = function(fname)
+                    return vim.fs.dirname(fname)
+                end,
+                settings = {
+                    clangd = {
+                        InlayHints = {
+                            Designators = true,
+                            Enabled = true,
+                            ParameterNames = true,
+                            DeducedTypes = true,
+                        },
+                        fallbackFlags = { "-std=c++20" },
+                    },
+                },
+            }
+        end
+
         if vim.fn.executable("node") == 1 then
             servers.html = {}
             servers.cssls = {}
-            servers.ts_ls = {}
+            servers.ts_ls = {
+                settings = {
+                    complete_function_calls = true,
+                    vtsls = {
+                        enableMoveToFileCodeAction = true,
+                        autoUseWorkspaceTsdk = true,
+                        experimental = {
+                            maxInlayHintLength = 30,
+                            completion = {
+                                enableServerSideFuzzyMatch = true,
+                            },
+                        },
+                    },
+                    typescript = {
+                        updateImportsOnFileMove = { enabled = "always" },
+                        suggest = {
+                            completeFunctionCalls = true,
+                        },
+                        inlayHints = {
+                            enumMemberValues = { enabled = true },
+                            functionLikeReturnTypes = { enabled = true },
+                            parameterNames = { enabled = "literals" },
+                            parameterTypes = { enabled = true },
+                            propertyDeclarationTypes = { enabled = true },
+                            variableTypes = { enabled = false },
+                        },
+                    },
+                },
+            }
+            servers.eslint = {}
             servers.jsonls = {}
             servers.pyright = {}
         end
@@ -277,9 +310,9 @@ return { -- LSP Configuration & Plugins
             }
         end
 
-        if vim.fn.executable("cargo") == 1 then
-            servers.htmx = {}
-        end
+        -- if vim.fn.executable("cargo") == 1 then
+        -- servers.htmx = {}
+        -- end
 
         -- Ensure the servers and tools above are installed
         --  To check the current status of installed tools and/or manually install
@@ -302,42 +335,42 @@ return { -- LSP Configuration & Plugins
             for k, v in ipairs(ensure_installed) do
                 if v == "clangd" then
                     table.remove(ensure_installed, k)
-                    local server = servers[v]
-                    server.capabilities =
-                        vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-
-                    require("lspconfig")[v].setup(server)
                     break
                 end
             end
         end
 
-        require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+        -- require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
         require("mason-lspconfig").setup({
-            handlers = {
-                function(server_name)
-                    local server = servers[server_name] or {}
-                    -- This handles overriding only values explicitly passed
-                    -- by the server configuration above. Useful when disabling
-                    -- certain features of an LSP (for example, turning off formatting for tsserver)
-                    server.capabilities =
-                        vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-                    require("lspconfig")[server_name].setup(server)
-                end,
-            },
+            ensure_installed = ensure_installed,
+            automatic_installation = false,
+            -- handlers = {
+            --     function(server_name)
+            --         local server = servers[server_name] or {}
+            --         -- This handles overriding only values explicitly passed
+            --         -- by the server configuration above. Useful when disabling
+            --         -- certain features of an LSP (for example, turning off formatting for tsserver)
+            --         server.capabilities =
+            --             vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+            --         require("lspconfig")[server_name].setup(server)
+            --     end,
+            -- },
         })
 
-        if servers.sqls ~= nil then
-            require("lspconfig").sqls.setup({
-                on_attach = function(client, bufnr)
+        for key, server in pairs(servers) do
+            server.capabilities =
+                vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+
+            if key == "sqls" then
+                server.on_attach = function(client, bufnr)
                     client.server_capabilities.documentFormattingProvider = false
                     client.server_capabilities.documentRangeFormattingProvider = false
                     require("sqls").on_attach(client, bufnr) -- require sqls.nvim
-                end,
-                settings = servers.sqls.settings,
-                capabilities = capabilities,
-            })
+                end
+            end
+
+            require("lspconfig")[key].setup(server)
         end
     end,
 }

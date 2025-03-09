@@ -102,6 +102,10 @@ vim.keymap.set("x", "<Leader>p", '"_dP')
 -- use leader d to delete without changing the clipboard
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
+-- use leader p to paste from system clipboard
+vim.keymap.set("n", "<leader>p", [["+p]])
+vim.keymap.set("n", "<leader>P", [["+P]])
+
 -- use leader y to yank to system clipboard
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])

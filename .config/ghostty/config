@@ -3,6 +3,8 @@ theme = dark:catppuccin-mocha,light:catppuccin-latte
 clipboard-read = allow
 clipboard-write = allow
 
+macos-option-as-alt = true
+
 keybind = alt+1=unbind
 keybind = alt+2=unbind
 keybind = alt+3=unbind

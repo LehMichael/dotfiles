@@ -75,9 +75,16 @@ return {
         return {
             -- Basic debugging keymaps, feel free to change to your liking!
             { "<F5>", dap.continue, desc = "Debug: Start/Continue" },
-            { "<F1>", dap.step_into, desc = "Debug: Step Into" },
-            { "<F2>", dap.step_over, desc = "Debug: Step Over" },
-            { "<F3>", dap.step_out, desc = "Debug: Step Out" },
+            {
+                "<F17>",
+                function()
+                    dap.terminate({ all = true })
+                end,
+                desc = "Debug: Stop",
+            },
+            { "<F11>", dap.step_into, desc = "Debug: Step Into" },
+            { "<F10>", dap.step_over, desc = "Debug: Step Over" },
+            { "<F23>", dap.step_out, desc = "Debug: Step Out" },
             { "<leader>b", dap.toggle_breakpoint, desc = "Debug: Toggle Breakpoint" },
             {
                 "<leader>B",
@@ -98,6 +105,7 @@ return {
         local ensure_installed = {
             "codelldb",
             "cppdbg",
+            "js",
         }
 
         if vim.fn.executable("go") == 1 then
@@ -151,25 +159,54 @@ return {
             --    Feel free to remove or use ones that you like more! :)
             --    Don't feel like these are good choices.
             icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
-            -- controls = {
-            --     icons = {
-            --         pause = "⏸",
-            --         play = "▶",
-            --         step_into = "⏎",
-            --         step_over = "⏭",
-            --         step_out = "⏮",
-            --         step_back = "b",
-            --         run_last = "▶▶",
-            --         terminate = "⏹",
-            --         disconnect = "⏏",
-            --     },
-            -- },
+            controls = {
+                element = "repl",
+                enabled = true,
+                icons = {
+                    disconnect = "",
+                    pause = "",
+                    play = "<F5> ",
+                    run_last = "",
+                    step_back = "",
+                    step_into = "<F11> ",
+                    step_out = "<S-F11> ",
+                    step_over = "<F10> ",
+                    terminate = "<S-F5> ",
+                },
+            },
         })
 
         dap.listeners.after.event_initialized["dapui_config"] = dapui.open
         dap.listeners.before.event_terminated["dapui_config"] = dapui.close
         dap.listeners.before.event_exited["dapui_config"] = dapui.close
         dap.adapters.lldb = dap.adapters.codelldb
+
+        local jspath
+        local ok = pcall(function()
+            jspath = require("mason-registry").get_package("js-debug-adapter"):get_install_path()
+        end)
+
+        if ok then
+            dap.adapters["pwa-node"] = {
+                type = "server",
+                host = "localhost",
+                port = "${port}",
+                executable = {
+                    command = "node",
+                    args = { jspath .. "/js-debug/src/dapDebugServer.js", "${port}" },
+                },
+            }
+
+            dap.configurations.javascript = {
+                {
+                    type = "pwa-node",
+                    request = "launch",
+                    name = "Launch file",
+                    program = "${file}",
+                    cwd = "${workspaceFolder}",
+                },
+            }
+        end
 
         -- Install golang specific config
         require("dap-go").setup({
