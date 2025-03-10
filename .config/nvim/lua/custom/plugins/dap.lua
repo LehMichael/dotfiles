@@ -72,9 +72,25 @@ return {
     keys = function(_, keys)
         local dap = require("dap")
         local dapui = require("dapui")
+
+        local last_config
+        dap.listeners.after.event_initialized["some-unique-id"] = function(session)
+            last_config = session.config
+        end
+
         return {
             -- Basic debugging keymaps, feel free to change to your liking!
-            { "<F5>", dap.continue, desc = "Debug: Start/Continue" },
+            {
+                "<F5>",
+                function()
+                    if last_config and not dap.session() then
+                        dap.run_last()
+                        return
+                    end
+                    dap.continue()
+                end,
+                desc = "Debug: Start/Continue",
+            },
             {
                 "<F17>",
                 function()
@@ -187,7 +203,7 @@ return {
         end)
 
         if ok then
-            dap.adapters["pwa-node"] = {
+            local node_adapter = {
                 type = "server",
                 host = "localhost",
                 port = "${port}",
@@ -195,7 +211,19 @@ return {
                     command = "node",
                     args = { jspath .. "/js-debug/src/dapDebugServer.js", "${port}" },
                 },
+                enrich_config = function(conf, on_config)
+                    if not vim.startswith(conf.type, "pwa-") then
+                        local config = vim.deepcopy(conf)
+                        config.type = "pwa-" .. config.type
+                        on_config(config)
+                    else
+                        on_config(conf)
+                    end
+                end,
             }
+
+            dap.adapters["pwa-node"] = node_adapter
+            dap.adapters["node"] = node_adapter
 
             dap.configurations.javascript = {
                 {
