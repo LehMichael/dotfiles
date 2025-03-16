@@ -26,10 +26,22 @@ fi
 bindkey -M menuselect '\r' .accept-line
 bindkey -M menuselect  '^[[D' .backward-char  '^[OD' .backward-char
 bindkey -M menuselect  '^[[C'  .forward-char  '^[OC'  .forward-char
+
+# https://github.com/marlonrichert/zsh-autocomplete
 bindkey              '^I' menu-select
 bindkey "$terminfo[kcbt]" menu-select
 bindkey -M menuselect              '^I'         menu-complete
 bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
+zstyle ':completion:*' completer _complete _complete:-fuzzy _correct _approximate _ignored
+# all Tab widgets
+zstyle ':autocomplete:*complete*:*' insert-unambiguous yes
+
+# all history widgets
+zstyle ':autocomplete:*history*:*' insert-unambiguous yes
+
+# ^S
+zstyle ':autocomplete:menu-search:*' insert-unambiguous yes
+
 # autoload -Uz compinit
 # compinit
 autoload -U promptinit; promptinit
