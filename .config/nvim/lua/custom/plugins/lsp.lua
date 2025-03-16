@@ -9,10 +9,13 @@ return { -- LSP Configuration & Plugins
         -- Useful status updates for LSP.
         -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
         { "j-hui/fidget.nvim", opts = {} },
+
+        "nanotee/sqls.nvim",
     },
     config = function()
         -- vim.lsp.set_log_level("debug")
-        vim.lsp.set_log_level("off")
+        vim.lsp.set_log_level(vim.lsp.log_levels.WARN)
+        -- vim.lsp.set_log_level("off")
         -- Brief aside: **What is LSP?**
         --
         -- LSP is an initialism you've probably heard, but might not understand what it is.
@@ -104,54 +107,14 @@ return { -- LSP Configuration & Plugins
                 --  For example, in C this would take you to the header.
                 -- map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
-                -- The following two autocommands are used to highlight references of the
-                -- word under your cursor when your cursor rests there for a little while.
-                --    See `:help CursorHold` for information about when this is executed
-                --
-                -- When you move your cursor, the highlights will be cleared (the second autocommand).
-                local client = vim.lsp.get_client_by_id(event.data.client_id)
-                if
-                    client
-                    and client.supports_method(
-                        vim.lsp.protocol.Methods.textDocument_documentHighlight
-                    )
-                then
-                    local highlight_augroup =
-                        vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
-                    vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-                        buffer = event.buf,
-                        group = highlight_augroup,
-                        callback = vim.lsp.buf.document_highlight,
-                    })
-
-                    vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-                        buffer = event.buf,
-                        group = highlight_augroup,
-                        callback = vim.lsp.buf.clear_references,
-                    })
-
-                    vim.api.nvim_create_autocmd("LspDetach", {
-                        group = vim.api.nvim_create_augroup(
-                            "kickstart-lsp-detach",
-                            { clear = true }
-                        ),
-                        callback = function(event2)
-                            vim.lsp.buf.clear_references()
-                            vim.api.nvim_clear_autocmds({
-                                group = "kickstart-lsp-highlight",
-                                buffer = event2.buf,
-                            })
-                        end,
-                    })
-                end
-
                 -- The following autocommand is used to enable inlay hints in your
                 -- code, if the language server you are using supports them
                 --
                 -- This may be unwanted, since they displace some of your code
+                local client = vim.lsp.get_client_by_id(event.data.client_id)
                 if
                     client
-                    and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint)
+                    and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint)
                 then
                     map("<leader>th", function()
                         vim.lsp.inlay_hint.enable(
@@ -293,21 +256,44 @@ return { -- LSP Configuration & Plugins
                             compositeLiteralTypes = true,
                             functionTypeParameters = true,
                         },
+                        analyses = {
+                            shadow = true,
+                        },
+                        staticcheck = true,
                     },
                 },
             }
             servers.sqls = {
-                settings = {
-                    sqls = {
-                        lowercaseKeywords = false,
-                        connections = {
-                            {
-                                driver = "sqlite3",
-                                dataSourceName = "file:/Users/michael/src/priceCalc/test123.db",
-                            },
-                        },
-                    },
+                single_file_support = false,
+                root_dir = function(fname)
+                    -- check if file is in cwd or a subdirectory
+                    local cwd = vim.fn.getcwd()
+                    local file_dir = vim.fs.dirname(fname)
+                    if file_dir == cwd or file_dir:find(cwd .. "/") then
+                        return cwd
+                    end
+                    -- otherwise fall back to default behavior
+                    return require("lspconfig").util.root_pattern("config.yml")
+                end,
+                capabilities = {
+                    documentFormattingProvider = false,
+                    documentRangeFormattingProvider = false,
                 },
+                on_new_config = function(config, _)
+                    local conf_path = vim.fs.joinpath(vim.fn.getcwd(), "/.sqls.yml")
+
+                    if vim.fn.filereadable(conf_path) == 1 then
+                        config.cmd = {
+                            "sqls",
+                            "-trace",
+                            "-config",
+                            conf_path,
+                        }
+                    end
+                end,
+                on_attach = function(client, bufnr)
+                    require("sqls").on_attach(client, bufnr)
+                end,
             }
         end
 
@@ -362,14 +348,6 @@ return { -- LSP Configuration & Plugins
         for key, server in pairs(servers) do
             server.capabilities =
                 vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-
-            if key == "sqls" then
-                server.on_attach = function(client, bufnr)
-                    client.server_capabilities.documentFormattingProvider = false
-                    client.server_capabilities.documentRangeFormattingProvider = false
-                    require("sqls").on_attach(client, bufnr) -- require sqls.nvim
-                end
-            end
 
             require("lspconfig")[key].setup(server)
         end
