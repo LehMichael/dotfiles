@@ -264,28 +264,15 @@ return { -- LSP Configuration & Plugins
                 },
             }
             servers.sqls = {
-                single_file_support = false,
-                root_dir = function(fname)
-                    -- check if file is in cwd or a subdirectory
-                    local cwd = vim.fn.getcwd()
-                    local file_dir = vim.fs.dirname(fname)
-                    if file_dir == cwd or file_dir:find(cwd .. "/") then
-                        return cwd
-                    end
-                    -- otherwise fall back to default behavior
-                    return require("lspconfig").util.root_pattern("config.yml")
-                end,
-                capabilities = {
-                    documentFormattingProvider = false,
-                    documentRangeFormattingProvider = false,
-                },
-                on_new_config = function(config, _)
-                    local conf_path = vim.fs.joinpath(vim.fn.getcwd(), "/.sqls.yml")
+                -- change filename from default config.yml to .sqls.yml
+                -- root_dir = require("lspconfig").util.root_pattern("sqls.yml"),
+                root_dir = vim.fs.root(0, "sqls.yml"),
+                on_new_config = function(config, root_dir)
+                    local conf_path = vim.fs.joinpath(root_dir, "sqls.yml")
 
                     if vim.fn.filereadable(conf_path) == 1 then
                         config.cmd = {
                             "sqls",
-                            "-trace",
                             "-config",
                             conf_path,
                         }
@@ -317,7 +304,6 @@ return { -- LSP Configuration & Plugins
             -- "templ",
         })
 
-        -- vim.print(vim.fn.system("arch"))
         if vim.fn.system("arch"):find("aarch64") then
             for k, v in ipairs(ensure_installed) do
                 if v == "clangd" then

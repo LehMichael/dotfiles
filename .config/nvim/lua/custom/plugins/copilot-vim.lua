@@ -10,7 +10,12 @@ return {
 
         map("i", "<M-]>", "<Plug>(copilot-next)", {})
         map("i", "<M-[>", "<Plug>(copilot-previous)", {})
-        map("i", "<M-CR>", 'copilot#Accept("\\<CR>")', { expr = true, replace_keycodes = false })
+        map(
+            "i",
+            "<M-CR>",
+            'copilot#Accept("\\<CR>")',
+            { expr = true, replace_keycodes = false, silent = true }
+        )
         map("i", "<M-w>", "<Plug>(copilot-accept-word)")
         map("i", "<M-l>", "<Plug>(copilot-accept-line)")
         map("i", "<M-c>", "<Plug>(copilot-dismiss)")
