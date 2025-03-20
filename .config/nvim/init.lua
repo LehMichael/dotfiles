@@ -102,9 +102,9 @@ vim.keymap.set("x", "<Leader>p", '"_dP')
 -- use leader d to delete without changing the clipboard
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
--- use leader p to paste from system clipboard
-vim.keymap.set("n", "<leader>p", [["+p]])
-vim.keymap.set("n", "<leader>P", [["+P]])
+-- use leader p to paste from yank buffer
+vim.keymap.set("n", "<leader>p", [["0p]])
+vim.keymap.set("n", "<leader>P", [["0P]])
 
 -- use leader y to yank to system clipboard
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
@@ -114,6 +114,19 @@ vim.keymap.set("v", "<leader>y", [["+y]])
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+
+vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close current buffer" })
+vim.keymap.set("n", "<leader>bD", function()
+    local act_buf = vim.api.nvim_get_current_buf()
+    local buf_list = vim.tbl_filter(function(buf)
+        return vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf)
+    end, vim.api.nvim_list_bufs())
+    for _, buf in ipairs(buf_list) do
+        if buf ~= act_buf then
+            vim.api.nvim_buf_delete(buf, { force = true })
+        end
+    end
+end, { desc = "Close all other buffers" })
 
 ---- Auto indent on empty line.
 local function indent_empty_line(key)
