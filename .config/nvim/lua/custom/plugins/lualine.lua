@@ -63,6 +63,14 @@ return {
                     -- 	alternate_file = "#", -- Text to show to identify the alternate file
                     -- 	directory = "", -- Text to show when the buffer is a directory
                     -- },
+                    filetype_names = {
+                        TelescopePrompt = "Telescope",
+                        dashboard = "Dashboard",
+                        packer = "Packer",
+                        fzf = "FZF",
+                        alpha = "Alpha",
+                        oil = "Oil",
+                    }, -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
                 },
             },
         },

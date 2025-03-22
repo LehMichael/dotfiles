@@ -1,9 +1,43 @@
 local wezterm = require("wezterm")
 local mux = wezterm.mux
 
-wezterm.on("gui-startup", function(cmd)
-	local tab, pane, window = mux.spawn_window(cmd or {})
-	window:gui_window():maximize()
+-- wezterm.on("gui-startup", function(cmd)
+-- 	local tab, pane, window = mux.spawn_window(cmd or {})
+-- window:gui_window():maximize()
+-- end)
+local cache_dir = os.getenv("HOME") .. "/.cache/wezterm/"
+local window_size_cache_path = cache_dir .. "window_size_cache.txt"
+
+wezterm.on("gui-startup", function()
+	os.execute("mkdir " .. cache_dir)
+
+	local window_size_cache_file = io.open(window_size_cache_path, "r")
+	local window
+	if window_size_cache_file ~= nil then
+		local _, _, width, height = string.find(window_size_cache_file:read(), "(%d+),(%d+)")
+		_, _, window =
+			mux.spawn_window({ width = tonumber(width), height = tonumber(height), position = { x = 0, y = 0 } })
+		window_size_cache_file:close()
+	else
+		_, _, window = mux.spawn_window({})
+		window:gui_window():maximize()
+	end
+end)
+
+wezterm.on("window-resized", function(_, pane)
+	local tab_size = pane:tab():get_size()
+	local cols = tab_size["cols"]
+	local rows = tab_size["rows"] + 2 -- Without adding the 2 here, the window doesn't maximize
+	local contents = string.format("%d,%d", cols, rows)
+
+	local window_size_cache_file = io.open(window_size_cache_path, "w")
+	-- Check if the file was successfully opened
+	if window_size_cache_file then
+		window_size_cache_file:write(contents)
+		window_size_cache_file:close()
+	else
+		print("Error: Could not open file for writing: " .. window_size_cache_path)
+	end
 end)
 
 local config = {}
@@ -49,6 +83,14 @@ config.window_padding = {
 config.window_close_confirmation = "NeverPrompt"
 config.send_composed_key_when_left_alt_is_pressed = false
 config.send_composed_key_when_right_alt_is_pressed = false
+
+config.keys = {
+	{
+		key = "Enter",
+		mods = "ALT",
+		action = wezterm.action.DisableDefaultAssignment,
+	},
+}
 
 -- config.window_background_opacity = 0.9
 -- config.macos_window_background_blur = 30

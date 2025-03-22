@@ -52,6 +52,9 @@ return {
         vim.api.nvim_create_user_command("Notifications", function()
             Snacks.notifier.show_history()
         end, { force = true })
+        vim.api.nvim_create_user_command("Lazygit", function()
+            Snacks.lazygit()
+        end, { force = true })
     end,
     ---@type snacks.Config
     opts = {
@@ -59,6 +62,7 @@ return {
         bigfile = {},
         image = {},
         notifier = {},
+        lazygit = {},
     },
     keys = {
         -- Top Pickers & Explorer
@@ -79,7 +83,9 @@ return {
         {
             "<leader>sg",
             function()
-                Snacks.picker.grep()
+                Snacks.picker.grep({
+                    hidden = true,
+                })
             end,
             desc = "Grep",
         },
