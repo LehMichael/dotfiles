@@ -119,7 +119,7 @@ vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close current buffer"
 vim.keymap.set("n", "<leader>bD", function()
     local act_buf = vim.api.nvim_get_current_buf()
     local buf_list = vim.tbl_filter(function(buf)
-        return vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf)
+        return vim.api.nvim_buf_is_valid(buf)
     end, vim.api.nvim_list_bufs())
     for _, buf in ipairs(buf_list) do
         if buf ~= act_buf then

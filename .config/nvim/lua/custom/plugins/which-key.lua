@@ -2,6 +2,7 @@ return { -- Useful plugin to show you pending keybinds.
     "folke/which-key.nvim",
     event = "VeryLazy", -- Sets the loading event to 'VimEnter'
     opts = {
+        -- debug = true,
         icons = { rules = false },
         spec = {
             { "<leader>c", group = "[C]ode" },

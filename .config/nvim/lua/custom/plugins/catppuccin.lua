@@ -26,6 +26,7 @@ return {
                     -- style = "nvchad"
                 },
                 notify = true,
+                vim_sneak = true,
             },
         })
         vim.cmd.colorscheme("catppuccin")
