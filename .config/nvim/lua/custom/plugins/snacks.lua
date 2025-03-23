@@ -63,6 +63,7 @@ return {
         image = {},
         notifier = {},
         lazygit = {},
+        indent = {},
     },
     keys = {
         -- Top Pickers & Explorer
