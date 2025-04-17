@@ -188,5 +188,56 @@ return {
                 detached = vim.fn.has("win32") == 0,
             },
         })
+
+        local function get_air_binary_path()
+            local path = vim.fn.getcwd() .. "/.air.toml"
+            local file = io.open(path, "r")
+            if not file then
+                return nil
+            end
+
+            for line in file:lines() do
+                local bin = line:match('^%s*bin%s*=%s*"([^"]+)"')
+                if bin then
+                    file:close()
+                    return bin
+                end
+            end
+
+            file:close()
+            return nil
+        end
+
+        local function get_pid_from_binary(binary_path)
+            local handle = io.popen("pgrep -f '" .. binary_path .. "'")
+            if not handle then
+                return nil
+            end
+
+            local result = handle:read("*a")
+            handle:close()
+
+            local pid = result:match("(%d+)")
+            return pid
+        end
+
+        local air_bin = get_air_binary_path()
+        if air_bin then
+            table.insert(dap.configurations.go, {
+                name = "Attach to Air Process",
+                type = "go",
+                request = "attach",
+                mode = "local",
+                processId = function()
+                    local pid = get_pid_from_binary(air_bin)
+                    if pid then
+                        print("Attaching to PID: " .. pid)
+                        return tonumber(pid)
+                    else
+                        error("Could not find PID for " .. air_bin)
+                    end
+                end,
+            })
+        end
     end,
 }

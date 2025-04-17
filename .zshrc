@@ -43,6 +43,7 @@ zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:accept
 zstyle ':fzf-tab:*' use-fzf-default-opts yes
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 autoload -U promptinit; promptinit
 prompt pure

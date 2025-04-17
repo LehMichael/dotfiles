@@ -21,10 +21,6 @@ return {
                 dap = true,
                 dap_ui = true,
                 which_key = true,
-                telescope = {
-                    enabled = true,
-                    -- style = "nvchad"
-                },
                 notify = true,
                 vim_sneak = true,
             },

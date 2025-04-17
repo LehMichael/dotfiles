@@ -85,7 +85,7 @@ return { -- LSP Configuration & Plugins
                 -- Fuzzy find all the symbols in your current document.
                 --  Symbols are things like variables, functions, types, etc.
                 --  Redefine default keybinding to use Telescope
-                map("gO", require("telescope.builtin").lsp_document_symbols, "Document Symbols")
+                -- map("gO", require("telescope.builtin").lsp_document_symbols, "Document Symbols")
 
                 -- Fuzzy find all the symbols in your current workspace.
                 --  Similar to document symbols, except searches over your entire project.
@@ -146,6 +146,8 @@ return { -- LSP Configuration & Plugins
         --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
         --  - settings (table): Override the default settings passed when initializing the server.
         --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+        --
+        local ensure_installed = {}
 
         local servers = {
             -- rust_analyzer = {},
@@ -206,8 +208,41 @@ return { -- LSP Configuration & Plugins
             }
         end
 
+        -- local function filter_diagnostics(diagnostic)
+        --     local eslint_attached = false
+        --     local clients = vim.lsp.get_clients({ bufnr = bufnr })
+        --     for _, client in pairs(clients) do
+        --         if client.name == "eslint" then
+        --             eslint_attached = true
+        --             break
+        --         end
+        --     end
+        --
+        --     -- If eslint is attached, filter out TypeScript diagnostics
+        --     if eslint_attached and diagnostic.source == "typescript" then
+        --         return false
+        --     end
+        --     return true
+        -- end
+        --
+        -- -- Customize the "textDocument/publishDiagnostics" handler to filter out TypeScript diagnostics
+        -- vim.lsp.handlers["textDocument/publishDiagnostics"] = function(_, result, ctx)
+        --     -- Filter out diagnostics before passing them to the default handler
+        --     result.diagnostics = vim.tbl_filter(filter_diagnostics, result.diagnostics)
+        --     -- Call the default handler after modifying diagnostics
+        --     vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx)
+        -- end
+
         if vim.fn.executable("node") == 1 then
-            servers.html = {}
+            servers.volar = {}
+            local mason_registry = require("mason-registry")
+            local vue_language_server_path = mason_registry
+                .get_package("vue-language-server")
+                :get_install_path() .. "/node_modules/@vue/language-server"
+
+            servers.html = {
+                filetypes = { "html", "handlebars", "hbs" },
+            }
             servers.cssls = {}
             servers.ts_ls = {
                 settings = {
@@ -236,6 +271,22 @@ return { -- LSP Configuration & Plugins
                             variableTypes = { enabled = false },
                         },
                     },
+                },
+                init_options = {
+                    plugins = {
+                        {
+                            name = "@vue/typescript-plugin",
+                            location = vue_language_server_path,
+                            languages = { "vue" },
+                        },
+                    },
+                },
+                filetypes = {
+                    "typescript",
+                    "javascript",
+                    "javascriptreact",
+                    "typescriptreact",
+                    "vue",
                 },
             }
             servers.eslint = {}
@@ -298,7 +349,7 @@ return { -- LSP Configuration & Plugins
 
         -- You can add other tools here that you want Mason to install
         -- for you, so that they are available from within Neovim.
-        local ensure_installed = vim.tbl_keys(servers or {})
+        vim.list_extend(ensure_installed, vim.tbl_keys(servers or {}))
         vim.list_extend(ensure_installed, {
             -- "clangd",
             -- "templ",

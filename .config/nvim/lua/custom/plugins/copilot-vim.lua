@@ -1,7 +1,8 @@
 return {
     "github/copilot.vim",
     config = function()
-        -- vim.g.copilot#enable()
+        vim.cmd("silent! Copilot disable")
+
         local map = vim.keymap.set
 
         vim.g.copilot_no_tab_map = true

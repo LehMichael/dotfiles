@@ -34,6 +34,14 @@ local conform = { -- Auto
             -- javascript = { { "prettierd", "prettier" } },
             sql = { "sqlfmt" },
             templ = { "templ" },
+            vue = { "prettier" },
+            javascript = { "prettier" },
+            typescript = { "prettier" },
+            json = { "prettier" },
+            html = { "prettier" },
+            css = { "prettier" },
+            scss = { "prettier" },
+            yaml = { "prettier" },
         },
         formatters = {},
     },
@@ -67,6 +75,27 @@ local conform = { -- Auto
         end, {
             desc = "Re-enable autoformat-on-save",
         })
+
+        local conform = require("conform")
+        -- Keep original format function
+        local original_format = conform.format
+
+        -- Wrap it with your post-format hook
+        ---@diagnostic disable-next-line: duplicate-set-field
+        conform.format = function(opts, callback)
+            original_format(opts, function(err, did_edit)
+                local bufnr = opts.bufnr or 0
+
+                vim.api.nvim_buf_call(bufnr, function()
+                    vim.cmd("silent! Sleuth")
+                end)
+
+                -- Call user's callback if they provided one
+                if callback then
+                    callback(err, did_edit)
+                end
+            end)
+        end
     end,
 }
 
@@ -76,6 +105,21 @@ if vim.fn.executable("go") == 1 then
         prepend_args = { "-m", "100" },
     }
 end
+
+conform.opts.formatters.prettier = {
+    prepend_args = function()
+        return {
+            "--single-quote",
+            "--no-bracket-spacing",
+            "--print-width",
+            "80",
+            "--tab-width",
+            "4",
+            "--config-precedence",
+            "prefer-file",
+        }
+    end,
+}
 
 local masonconform = {
     "zapling/mason-conform.nvim",
