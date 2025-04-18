@@ -1,3 +1,4 @@
 .DS_Store
 lazy-lock.json
 Brewfile.lock.json
+fish_variables
