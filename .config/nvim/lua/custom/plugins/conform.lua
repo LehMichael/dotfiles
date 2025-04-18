@@ -34,14 +34,6 @@ local conform = { -- Auto
             -- javascript = { { "prettierd", "prettier" } },
             sql = { "sqlfmt" },
             templ = { "templ" },
-            vue = { "prettier" },
-            javascript = { "prettier" },
-            typescript = { "prettier" },
-            json = { "prettier" },
-            html = { "prettier" },
-            css = { "prettier" },
-            scss = { "prettier" },
-            yaml = { "prettier" },
         },
         formatters = {},
     },
@@ -106,20 +98,32 @@ if vim.fn.executable("go") == 1 then
     }
 end
 
-conform.opts.formatters.prettier = {
-    prepend_args = function()
-        return {
-            "--single-quote",
-            "--no-bracket-spacing",
-            "--print-width",
-            "80",
-            "--tab-width",
-            "4",
-            "--config-precedence",
-            "prefer-file",
-        }
-    end,
-}
+if vim.fn.executable("node") == 1 then
+    vim.list_extend(conform.opts.formatters_by_ft, {
+        vue = { "prettier" },
+        javascript = { "prettier" },
+        typescript = { "prettier" },
+        json = { "prettier" },
+        html = { "prettier" },
+        css = { "prettier" },
+        scss = { "prettier" },
+        yaml = { "prettier" },
+    })
+    conform.opts.formatters.prettier = {
+        prepend_args = function()
+            return {
+                "--single-quote",
+                "--no-bracket-spacing",
+                "--print-width",
+                "80",
+                "--tab-width",
+                "4",
+                "--config-precedence",
+                "prefer-file",
+            }
+        end,
+    }
+end
 
 local masonconform = {
     "zapling/mason-conform.nvim",
