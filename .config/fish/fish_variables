@@ -35,8 +35,3 @@ SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
 SETUVAR fish_pager_color_selected_background:\x2dr
 SETUVAR fish_user_paths:/Users/michael/go/bin
-SETUVAR hydro_color_duration:magenta
-SETUVAR hydro_color_error:red
-SETUVAR hydro_color_git:brblack
-SETUVAR hydro_color_prompt:magenta
-SETUVAR hydro_color_pwd:blue
