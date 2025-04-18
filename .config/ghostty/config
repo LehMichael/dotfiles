@@ -3,7 +3,7 @@ theme = dark:catppuccin-mocha,light:catppuccin-latte
 clipboard-read = allow
 clipboard-write = allow
 
-font-size = 14
+font-size = 14.5
 
 macos-option-as-alt = true
 

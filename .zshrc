@@ -6,9 +6,8 @@ else
     printf "pure not found pull with >> git submodule update --init\n"
 fi
 
-autoload -U compinit; compinit
-if test -d ~/.zsh/fzf-tab; then
-    source ~/.zsh/fzf-tab/fzf-tab.plugin.zsh
+if test -d ~/.zsh/zsh-autocomplete; then
+    source ~/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 else
     printf "fzf-tab not found pull with >> git submodule update --init\n"
 fi
@@ -33,17 +32,24 @@ zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
 zstyle ':completion:*' menu no
-# preview directory's content with eza when completing cd
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
-# custom fzf flags
-# NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
-zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:accept
-# To make fzf-tab follow FZF_DEFAULT_OPTS.
-# NOTE: This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
-zstyle ':fzf-tab:*' use-fzf-default-opts yes
-# switch group using `<` and `>`
-zstyle ':fzf-tab:*' switch-group '<' '>'
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
+# https://github.com/marlonrichert/zsh-autocomplete
+bindkey -M menuselect  '^[[D' .backward-char  '^[OD' .backward-char
+bindkey -M menuselect  '^[[C'  .forward-char  '^[OC'  .forward-char
+
+bindkey              '^I' menu-select
+bindkey "$terminfo[kcbt]" menu-select
+bindkey -M menuselect              '^I'         menu-complete
+bindkey -M menuselect "$terminfo[kcbt]" reverse-menu-complete
+zstyle ':completion:*' completer _complete _complete:-fuzzy _correct _approximate _ignored
+# all Tab widgets
+zstyle ':autocomplete:*complete*:*' insert-unambiguous yes
+
+# all history widgets
+zstyle ':autocomplete:*history*:*' insert-unambiguous yes
+
+# ^S
+zstyle ':autocomplete:menu-search:*' insert-unambiguous yes
 
 autoload -U promptinit; promptinit
 prompt pure
