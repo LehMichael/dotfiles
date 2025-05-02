@@ -24,7 +24,7 @@ local git_ignored = setmetatable({}, {
 
 return {
     "refractalize/oil-git-status.nvim",
-    lazy = true,
+    lazy = false,
     dependencies = {
         "nvim-tree/nvim-web-devicons",
         {

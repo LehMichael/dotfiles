@@ -115,18 +115,52 @@ vim.keymap.set("v", "<leader>y", [["+y]])
 vim.opt.hlsearch = true
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
-vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close current buffer" })
-vim.keymap.set("n", "<leader>bD", function()
-    local act_buf = vim.api.nvim_get_current_buf()
-    local buf_list = vim.tbl_filter(function(buf)
-        return vim.api.nvim_buf_is_valid(buf)
-    end, vim.api.nvim_list_bufs())
-    for _, buf in ipairs(buf_list) do
-        if buf ~= act_buf then
-            vim.api.nvim_buf_delete(buf, { force = true })
+local function closeBuffers(pos)
+    local current_buf = vim.api.nvim_get_current_buf()
+    local buffer_component = require("lualine.components.buffers")
+    local buf_list = buffer_component.bufpos2nr or {}
+
+    local current_index
+    for i, buf in ipairs(buf_list) do
+        if buf == current_buf then
+            current_index = i
+            break
         end
     end
+
+    if not current_index then
+        vim.notify("Current buffer not found in Lualine buffer list", vim.log.levels.WARN)
+        return
+    end
+
+    if pos == "l" then
+        for i = 1, current_index - 1 do
+            vim.api.nvim_buf_delete(buf_list[i], { force = false })
+        end
+    elseif pos == "r" then
+        for i = #buf_list, current_index + 1, -1 do
+            vim.api.nvim_buf_delete(buf_list[i], { force = false })
+        end
+    else
+        for i = 1, #buf_list do
+            if i ~= current_index then
+                vim.api.nvim_buf_delete(buf_list[i], { force = false })
+            end
+        end
+    end
+end
+
+vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close current buffer" })
+vim.keymap.set("n", "<leader>bD", function()
+    closeBuffers()
 end, { desc = "Close all other buffers" })
+
+vim.keymap.set("n", "<leader>bh", function()
+    closeBuffers("l")
+end, { desc = "close buffers to the left" })
+vim.keymap.set("n", "<leader>bl", function()
+    closeBuffers("r")
+end, { desc = "close buffers to the right" })
 
 ---- Auto indent on empty line.
 local function indent_empty_line(key)

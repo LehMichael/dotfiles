@@ -55,21 +55,21 @@ return {
             desc = "Search Workspace Diagnostics",
         },
         {
-            "<leader>grr",
+            "grr",
             function()
                 require("fzf-lua").lsp_references()
             end,
             desc = "Search LSP References",
         },
         {
-            "<leader>gd",
+            "gd",
             function()
                 require("fzf-lua").lsp_definitions()
             end,
             desc = "Search LSP Definitions",
         },
         {
-            "<leader>dD",
+            "gD",
             function()
                 require("fzf-lua").lsp_declarations()
             end,

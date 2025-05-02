@@ -52,7 +52,7 @@ return {
         vim.api.nvim_create_user_command("Notifications", function()
             Snacks.notifier.show_history()
         end, { force = true })
-        vim.api.nvim_create_user_command("Lazygit", function()
+        vim.api.nvim_create_user_command("Git", function()
             Snacks.lazygit()
         end, { force = true })
     end,
