@@ -214,12 +214,14 @@ return {
 
         vim.list_extend(ensure_installed, vim.tbl_keys(servers or {}))
 
-        if vim.fn.system("arch"):find("aarch64") then
-            for k, v in ipairs(ensure_installed) do
-                if v == "clangd" then
-                    table.remove(ensure_installed, k)
-                    break
-                end
+        for k, v in ipairs(ensure_installed) do
+            if
+                v == "clangd"
+                and (vim.fn.executable("clangd") or vim.fn.system("arch"):find("aarch64"))
+            then
+                table.remove(ensure_installed, k)
+            elseif v == "gopls" and vim.fn.executable("gopls") then
+                table.remove(ensure_installed, k)
             end
         end
 
