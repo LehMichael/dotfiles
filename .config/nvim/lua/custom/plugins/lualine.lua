@@ -1,5 +1,5 @@
 for i = 1, 9 do
-    vim.keymap.set("n", "<M-" .. i .. ">", "<cmd>LualineBuffersJump! " .. i .. "<CR>")
+    vim.keymap.set("n", "<C-M-" .. i .. ">", "<cmd>LualineBuffersJump! " .. i .. "<CR>")
 end
 vim.keymap.set("n", "<tab>", "<cmd>bn<CR>")
 vim.keymap.set("n", "<S-tab>", "<cmd>bp<CR>")

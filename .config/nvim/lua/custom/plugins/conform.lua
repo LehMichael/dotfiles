@@ -129,7 +129,7 @@ local masonconform = {
     "zapling/mason-conform.nvim",
     dependencies = {
         "stevearc/conform.nvim",
-        { "williamboman/mason.nvim", config = true },
+        { "mason-org/mason.nvim", config = true },
     },
     opts = {},
 }

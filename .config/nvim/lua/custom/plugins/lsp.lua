@@ -1,8 +1,8 @@
 return {
     "neovim/nvim-lspconfig",
     dependencies = {
-        { "williamboman/mason.nvim", config = true },
-        "williamboman/mason-lspconfig.nvim",
+        { "mason-org/mason.nvim", config = true },
+        "mason-org/mason-lspconfig.nvim",
         "WhoIsSethDaniel/mason-tool-installer.nvim",
 
         { "j-hui/fidget.nvim", opts = {} },
@@ -39,32 +39,44 @@ return {
         capabilities =
             vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities())
 
-        local ensure_installed = {}
-
         local servers = {
-            --
-            templ = {},
+            mason = {
+                templ = {},
 
-            lua_ls = {
-                settings = {
-                    Lua = {
-                        completion = {
-                            callSnippet = "Replace",
+                lua_ls = {
+                    settings = {
+                        Lua = {
+                            completion = {
+                                callSnippet = "Replace",
+                            },
+                            hint = { enable = true },
+                            diagnostics = { disable = { "missing-fields" } },
                         },
-                        hint = { enable = true },
-                        diagnostics = { disable = { "missing-fields" } },
+                    },
+                },
+                typos_lsp = {
+                    init_options = {
+                        diagnosticSeverity = "Info",
                     },
                 },
             },
-            typos_lsp = {
-                init_options = {
-                    diagnosticSeverity = "Info",
-                },
-            },
+            others = {},
         }
 
+        if vim.fn.executable("cargo") then
+            servers.mason.rust_analyzer = {
+                settings = {
+                    ["rust-analyzer"] = {
+                        check = {
+                            ignore = { "dead_code" },
+                        },
+                    },
+                },
+            }
+        end
+
         if vim.fn.executable("clangd") then
-            servers.clangd = {
+            servers.others.clangd = {
                 cmd = {
                     "clangd",
                     "--offset-encoding=utf-16",
@@ -106,20 +118,20 @@ return {
 
         if vim.fn.executable("node") == 1 then
             if has_tailwind() then
-                servers.tailwindcss = {}
+                servers.mason.tailwindcss = {}
             else
-                servers.cssls = {}
+                servers.mason.cssls = {}
             end
-            servers.volar = {}
+            servers.mason.volar = {}
             local mason_registry = require("mason-registry")
             local vue_language_server_path = mason_registry
                 .get_package("vue-language-server")
                 :get_install_path() .. "/node_modules/@vue/language-server"
 
-            servers.html = {
+            servers.mason.html = {
                 filetypes = { "html", "handlebars", "hbs" },
             }
-            servers.ts_ls = {
+            servers.mason.ts_ls = {
                 settings = {
                     complete_function_calls = true,
                     vtsls = {
@@ -164,13 +176,13 @@ return {
                     "vue",
                 },
             }
-            servers.eslint = {}
-            servers.jsonls = {}
-            servers.pyright = {}
+            servers.mason.eslint = {}
+            servers.mason.jsonls = {}
+            servers.mason.pyright = {}
         end
 
         if vim.fn.executable("go") == 1 then
-            servers.gopls = {
+            servers.mason.gopls = {
                 settings = {
                     gopls = {
                         hints = {
@@ -189,52 +201,56 @@ return {
                     },
                 },
             }
-            servers.sqls = {
-                -- change filename from default config.yml to .sqls.yml
-                -- root_dir = require("lspconfig").util.root_pattern("sqls.yml"),
-                root_dir = vim.fs.root(0, "sqls.yml"),
-                on_new_config = function(config, root_dir)
-                    local conf_path = vim.fs.joinpath(root_dir, "sqls.yml")
+            -- servers.sqls = {
+            --     -- change filename from default config.yml to .sqls.yml
+            --     -- root_dir = require("lspconfig").util.root_pattern("sqls.yml"),
+            --     root_dir = vim.fs.root(0, "sqls.yml"),
+            --     on_new_config = function(config, root_dir)
+            --         local conf_path = vim.fs.joinpath(root_dir, "sqls.yml")
+            --
+            --         if vim.fn.filereadable(conf_path) == 1 then
+            --             config.cmd = {
+            --                 "sqls",
+            --                 "-config",
+            --                 conf_path,
+            --             }
+            --         end
+            --     end,
+            --     on_attach = function(client, bufnr)
+            --         require("sqls").on_attach(client, bufnr)
+            --     end,
+            -- }
+        end
 
-                    if vim.fn.filereadable(conf_path) == 1 then
-                        config.cmd = {
-                            "sqls",
-                            "-config",
-                            conf_path,
-                        }
-                    end
-                end,
-                on_attach = function(client, bufnr)
-                    require("sqls").on_attach(client, bufnr)
-                end,
-            }
+        if vim.fn.executable("zig") then
+            servers.mason.zls = {}
         end
 
         require("mason").setup()
 
-        vim.list_extend(ensure_installed, vim.tbl_keys(servers or {}))
-
-        for k, v in ipairs(ensure_installed) do
-            if
-                v == "clangd"
-                and (vim.fn.executable("clangd") or vim.fn.system("arch"):find("aarch64"))
-            then
-                table.remove(ensure_installed, k)
-            elseif v == "gopls" and vim.fn.executable("gopls") then
-                table.remove(ensure_installed, k)
-            end
-        end
+        local ensure_installed = vim.tbl_keys(servers.mason or {})
 
         require("mason-lspconfig").setup({
             ensure_installed = ensure_installed,
-            automatic_installation = false,
+            automatic_enable = false,
         })
 
-        for key, server in pairs(servers) do
-            server.capabilities =
-                vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-
-            require("lspconfig")[key].setup(server)
+        -- for key, server in pairs(servers) do
+        --     server.capabilities =
+        --         vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+        --
+        --     require("lspconfig")[key].setup(server)
+        -- end
+        for server, config in pairs(vim.tbl_extend("keep", servers.mason, servers.others)) do
+            if not vim.tbl_isempty(config) then
+                vim.lsp.config(server, config)
+            end
+            vim.lsp.enable(server)
         end
+
+        -- Manually run vim.lsp.enable for all language servers that are *not* installed via Mason
+        -- if not vim.tbl_isempty(servers.others) then
+        -- vim.lsp.enable(vim.tbl_keys(servers.others))
+        -- end
     end,
 }

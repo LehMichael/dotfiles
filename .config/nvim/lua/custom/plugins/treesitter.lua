@@ -28,6 +28,7 @@ return { -- Highlight, edit, and navigate code
         matchup = {
             enable = true,
         },
+        ignore_install = { "latex" },
     },
     config = function(_, opts)
         -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
