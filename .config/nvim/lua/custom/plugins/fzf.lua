@@ -7,6 +7,9 @@ return {
     lazy = false,
     opts = {
         register_ui_select = true,
+        grep = {
+            hidden = true,
+        },
     },
     init = function()
         require("fzf-lua").register_ui_select()
@@ -53,6 +56,13 @@ return {
                 require("fzf-lua").diagnostics_workspace()
             end,
             desc = "Search Workspace Diagnostics",
+        },
+        {
+            "<leader>sr",
+            function()
+                require("fzf-lua").resume()
+            end,
+            desc = "Resume Last Search",
         },
         {
             "grr",
