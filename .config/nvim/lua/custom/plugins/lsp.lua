@@ -83,9 +83,6 @@ return {
                     "--background-index",
                     "--clang-tidy",
                 },
-                root_dir = function(fname)
-                    return vim.fs.dirname(fname)
-                end,
                 settings = {
                     clangd = {
                         InlayHints = {
