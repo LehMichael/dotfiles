@@ -4,6 +4,7 @@ clipboard-read = allow
 clipboard-write = allow
 
 font-size = 14.5
+font-thicken = true
 
 macos-option-as-alt = true
 
