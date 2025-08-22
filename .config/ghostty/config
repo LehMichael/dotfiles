@@ -8,6 +8,12 @@ font-thicken = true
 
 macos-option-as-alt = true
 
+mouse-hide-while-typing = true
+scrollback-limit = 1000000
+
+window-save-state = always
+
+keybind = alt+0=unbind
 keybind = alt+1=unbind
 keybind = alt+2=unbind
 keybind = alt+3=unbind
@@ -17,4 +23,17 @@ keybind = alt+6=unbind
 keybind = alt+7=unbind
 keybind = alt+8=unbind
 keybind = alt+9=unbind
+
+keybind = ctrl+h=goto_split:left
+keybind = ctrl+j=goto_split:bottom
+keybind = ctrl+k=goto_split:top
+keybind = ctrl+l=goto_split:right
+
+keybind = ctrl+a>h=new_split:left
+keybind = ctrl+a>j=new_split:down
+keybind = ctrl+a>k=new_split:up
+keybind = ctrl+a>l=new_split:right
+keybind = ctrl+a>f=toggle_split_zoom
+
+keybind = super+r=reload_config
 
