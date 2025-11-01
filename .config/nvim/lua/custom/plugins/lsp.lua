@@ -10,9 +10,9 @@ return {
         "nanotee/sqls.nvim",
     },
     config = function()
-        -- vim.lsp.set_log_level("debug")
-        vim.lsp.set_log_level(vim.lsp.log_levels.WARN)
-        -- vim.lsp.set_log_level("off")
+        -- vim.lsp.set_log_level(vim.lsp.log_levels.DEBUG)
+        -- vim.lsp.set_log_level(vim.lsp.log_levels.WARN)
+        vim.lsp.set_log_level(vim.lsp.log_levels.OFF)
 
         vim.api.nvim_create_autocmd("LspAttach", {
             group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
@@ -113,34 +113,39 @@ return {
             return text:find('"tailwindcss"%s*:') ~= nil
         end
 
+        if vim.fn.executable("sourcekit-lsp") == 1 then
+            servers.others.sourcekit = {}
+        end
+
         if vim.fn.executable("node") == 1 then
             if has_tailwind() then
                 servers.mason.tailwindcss = {}
             else
                 servers.mason.cssls = {}
             end
-            servers.mason.volar = {}
-            local mason_registry = require("mason-registry")
-            local vue_language_server_path = mason_registry
-                .get_package("vue-language-server")
-                :get_install_path() .. "/node_modules/@vue/language-server"
 
             servers.mason.html = {
                 filetypes = { "html", "handlebars", "hbs" },
             }
+
+            servers.mason.vue_ls = {}
+            local vue_language_server_path = vim.fn.expand(
+                "$MASON/packages/vue-language-server/node_modules/@vue/language-server"
+            )
+
             servers.mason.ts_ls = {
                 settings = {
                     complete_function_calls = true,
-                    vtsls = {
-                        enableMoveToFileCodeAction = true,
-                        autoUseWorkspaceTsdk = true,
-                        experimental = {
-                            maxInlayHintLength = 30,
-                            completion = {
-                                enableServerSideFuzzyMatch = true,
-                            },
-                        },
-                    },
+                    -- vtsls = {
+                    --     enableMoveToFileCodeAction = true,
+                    --     autoUseWorkspaceTsdk = true,
+                    --     experimental = {
+                    --         maxInlayHintLength = 30,
+                    --         completion = {
+                    --             enableServerSideFuzzyMatch = true,
+                    --         },
+                    --     },
+                    -- },
                     typescript = {
                         updateImportsOnFileMove = { enabled = "always" },
                         suggest = {

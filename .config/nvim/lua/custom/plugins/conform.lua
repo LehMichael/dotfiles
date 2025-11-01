@@ -99,7 +99,7 @@ if vim.fn.executable("go") == 1 then
 end
 
 if vim.fn.executable("node") == 1 then
-    vim.list_extend(conform.opts.formatters_by_ft, {
+    conform.opts.formatters_by_ft = vim.tbl_deep_extend("force", conform.opts.formatters_by_ft, {
         vue = { "prettier" },
         javascript = { "prettier" },
         typescript = { "prettier" },

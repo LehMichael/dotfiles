@@ -60,7 +60,7 @@ return {
     opts = {
         -- picker = {},
         bigfile = {},
-        image = {},
+        -- image = {},
         notifier = {},
         lazygit = {},
         indent = {},

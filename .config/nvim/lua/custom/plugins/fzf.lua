@@ -10,6 +10,9 @@ return {
         grep = {
             hidden = true,
         },
+        files = {
+            fd_opts = [[--color=never --hidden --type f --type l --exclude .git --exclude node_modules]],
+        },
     },
     init = function()
         require("fzf-lua").register_ui_select()
