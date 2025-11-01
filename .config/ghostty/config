@@ -1,5 +1,6 @@
 
-theme = dark:catppuccin-mocha,light:catppuccin-latte
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+
 clipboard-read = allow
 clipboard-write = allow
 
