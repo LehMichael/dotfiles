@@ -37,4 +37,5 @@ set --global hydro_color_duration magenta
 # Red for errors (unchanged)
 set --global hydro_color_error red
 
-
+function last_history_item; echo $history[1]; end
+abbr -a !! --position anywhere --function last_history_item
