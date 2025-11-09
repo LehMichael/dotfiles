@@ -11,7 +11,7 @@ return {
                 light = "latte",
                 dark = "mocha",
             },
-            -- transparent_background = true,
+            transparent_background = true,
             custom_highlights = function(colors)
                 return {
                     LspSignatureActiveCust = { bg = colors.surface1, style = { "bold" } },
