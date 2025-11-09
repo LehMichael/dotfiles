@@ -4,6 +4,7 @@ end
 
 set --global fish_greeting
 set --global EDITOR nvim
+set --global MANPAGER "nvim +Man!"
 alias ls='eza --icons'
 
 if test -f /opt/homebrew/bin/brew
