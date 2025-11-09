@@ -39,3 +39,6 @@ keybind = ctrl+a>f=toggle_split_zoom
 
 keybind = super+r=reload_config
 
+shell-integration-features = no-cursor
+clipboard-trim-trailing-spaces = true
+background-opacity = 0.93
