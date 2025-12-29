@@ -1,3 +1,7 @@
+if not set -q XDG_CONFIG_HOME
+    set --export XDG_CONFIG_HOME "$HOME/.config"
+end
+
 set --global fish_greeting
 set --global EDITOR nvim
 set --global MANPAGER "nvim +Man!"
