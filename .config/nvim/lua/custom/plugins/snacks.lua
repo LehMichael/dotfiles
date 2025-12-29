@@ -64,6 +64,7 @@ return {
         notifier = {},
         lazygit = {},
         indent = {},
+        words = {},
     },
     -- keys = {
     --     -- Top Pickers & Explorer
