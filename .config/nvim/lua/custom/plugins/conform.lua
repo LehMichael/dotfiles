@@ -131,7 +131,16 @@ local masonconform = {
         "stevearc/conform.nvim",
         { "mason-org/mason.nvim", config = true },
     },
-    opts = {},
+    -- opts = {},
+    config = function()
+        local ignore_install = {}
+
+        if vim.fn.executable("clang-format") == 1 then
+            table.insert(ignore_install, "clang-format")
+        end
+
+        require("mason-conform").setup({ ignore_install = ignore_install })
+    end,
 }
 
 return { conform, masonconform }
