@@ -1,7 +1,3 @@
-if status is-interactive
-    # Commands to run in interactive sessions can go here
-end
-
 set --global fish_greeting
 set --global EDITOR nvim
 set --global MANPAGER "nvim +Man!"
@@ -10,6 +6,13 @@ alias ls='eza --icons'
 if test -f /opt/homebrew/bin/brew
     eval (/opt/homebrew/bin/brew shellenv)
     set -x HOMEBREW_BUNDLE_FILE ~/.config/homebrew/Brewfile
+end
+
+if status is-interactive; and not set -q TMUX; and type -q tmux
+    # Optional: don't auto-start tmux over SSH
+    if not set -q SSH_TTY
+        exec tmux new-session -A -s main
+    end
 end
 
 if type -q go
