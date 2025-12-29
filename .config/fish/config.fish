@@ -21,6 +21,7 @@ if type -q fzf
 end
 
 fish_add_path ~/bin
+fish_add_path ~/.local/bin
 
 set --global hydro_multiline true
 # Vibrant blue for path (~/.dotfiles)
