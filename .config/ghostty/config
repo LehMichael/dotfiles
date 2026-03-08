@@ -26,6 +26,8 @@ keybind = alt+7=unbind
 keybind = alt+8=unbind
 keybind = alt+9=unbind
 
+keybind = shift+bracket_left=text:{
+
 # keybind = ctrl+h=goto_split:left
 # keybind = ctrl+j=goto_split:bottom
 # keybind = ctrl+k=goto_split:top
