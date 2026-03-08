@@ -12,13 +12,6 @@ if test -f /opt/homebrew/bin/brew
     set -x HOMEBREW_BUNDLE_FILE ~/.config/homebrew/Brewfile
 end
 
-if status is-interactive; and not set -q TMUX; and type -q tmux
-    # Optional: don't auto-start tmux over SSH
-    if not set -q SSH_TTY
-        exec tmux new-session -A -s main
-    end
-end
-
 if type -q go
     fish_add_path (go env GOPATH)/bin
 end
