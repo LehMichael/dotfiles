@@ -82,6 +82,7 @@ return {
                     "--offset-encoding=utf-16",
                     "--background-index",
                     "--clang-tidy",
+                    "--query-driver=/usr/bin/clang++,/usr/bin/c++,/usr/bin/clang",
                 },
                 settings = {
                     clangd = {
