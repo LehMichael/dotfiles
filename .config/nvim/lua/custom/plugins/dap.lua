@@ -129,15 +129,9 @@ return {
         dap.listeners.before.event_exited["dapui_config"] = dapui.close
         dap.adapters.lldb = dap.adapters.codelldb
 
-        local jspath
-        local ok = pcall(function()
-            jspath = vim.fs.joinpath(
-                require("mason-registry").get_package("js-debug-adapter"):get_install_path(),
-                "/js-debug/src/dapDebugServer.js"
-            )
-        end)
+        local jspath = "$MASON/packages/js-debug-adapter/js-debug/src/dapDebugServer.js"
 
-        if ok and vim.fn.filereadable(jspath) then
+        if vim.fn.filereadable(jspath) then
             local node_adapter = {
                 type = "server",
                 host = "localhost",
