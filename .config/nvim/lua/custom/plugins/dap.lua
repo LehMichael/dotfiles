@@ -20,20 +20,11 @@ return {
         local dap = require("dap")
         local dapui = require("dapui")
 
-        local last_config
-        dap.listeners.after.event_initialized["some-unique-id"] = function(session)
-            last_config = session.config
-        end
-
         return {
             -- Basic debugging keymaps, feel free to change to your liking!
             {
                 "<F5>",
                 function()
-                    if last_config and not dap.session() then
-                        dap.run_last()
-                        return
-                    end
                     dap.continue()
                 end,
                 desc = "Debug: Start/Continue",
