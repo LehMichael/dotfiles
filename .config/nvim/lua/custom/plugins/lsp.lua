@@ -115,7 +115,10 @@ return {
         end
 
         if vim.fn.executable("sourcekit-lsp") == 1 then
-            servers.others.sourcekit = {}
+            servers.others.sourcekit = {
+
+                filetypes = { "swift" },
+            }
         end
 
         if vim.fn.executable("node") == 1 then
