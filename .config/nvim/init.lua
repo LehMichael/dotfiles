@@ -181,19 +181,21 @@ vim.keymap.set(
     { desc = "Open diagnostic [Q]uickfix list" }
 )
 
+-- Diagnostic Config
+-- See :help vim.diagnostic.Opts
 vim.diagnostic.config({
-    underline = true,
-    virtual_lines = true,
     update_in_insert = false,
-    -- virtual_text = {
-    --     spacing = 4,
-    --     source = "if_many",
-    --     prefix = "●",
-    --     -- this will set set the prefix to a function that returns the diagnostics icon based on the severity
-    --     -- this only works on a recent 0.10.0 build. Will be set to "●" when not supported
-    --     -- prefix = "icons",
-    -- },
     severity_sort = true,
+    float = { border = "rounded", source = "if_many" },
+    underline = { severity = vim.diagnostic.severity.ERROR },
+
+    -- Can switch between these as you prefer
+    virtual_text = false, -- Text shows up at the end of the line
+    virtual_lines = true, -- Text shows up underneath the line, with virtual lines
+
+    -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
+    jump = { float = true },
+
     signs = {
         text = {
             [vim.diagnostic.severity.ERROR] = " ",
