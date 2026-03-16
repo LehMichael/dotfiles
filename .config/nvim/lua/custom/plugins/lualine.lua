@@ -11,10 +11,10 @@ return {
     },
 
     opts = {
-        options = {
-            theme = "catppuccin",
+        -- options = {
+        --     theme = "catppuccin",
             -- globalstatus = true,
-        },
+        -- },
         extensions = { "oil" },
         sections = {
             lualine_a = { "mode" },

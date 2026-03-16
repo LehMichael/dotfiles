@@ -8,5 +8,22 @@ return {
     {
         "stevearc/overseer.nvim",
         opts = {},
+        lazy = false,
+        keys = {
+            {
+                "<leader>oo",
+                function()
+                    require("overseer").toggle()
+                end,
+                desc = "Overseer Toggle",
+            },
+            {
+                "<leader>or",
+                function()
+                    require("overseer").run_task({})
+                end,
+                desc = "Overseer Toggle",
+            },
+        },
     },
 }
