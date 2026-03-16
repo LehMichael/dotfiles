@@ -1,18 +1,26 @@
-# Generated from CLion Inspection settings
 ---
+# clang-tidy configuration for qtest project
+# Requires: clang-tidy 14+
+
+HeaderFilterRegex: 'src/.*\.(h|hpp)$'
+# WarningsAsErrors: 'bugprone-*,cert-*,clang-analyzer-*'
+
 Checks: '-*,
 bugprone-argument-comment,
 bugprone-assert-side-effect,
 bugprone-bad-signal-to-kill-thread,
 bugprone-branch-clone,
+bugprone-casting-through-void,
 bugprone-copy-constructor-init,
 bugprone-dangling-handle,
 bugprone-dynamic-static-initializers,
+bugprone-exception-escape,
 bugprone-fold-init-type,
 bugprone-forward-declaration-namespace,
 bugprone-forwarding-reference-overload,
 bugprone-inaccurate-erase,
 bugprone-incorrect-roundings,
+bugprone-infinite-loop,
 bugprone-integer-division,
 bugprone-lambda-function-name,
 bugprone-macro-parentheses,
@@ -22,16 +30,22 @@ bugprone-misplaced-pointer-arithmetic-in-alloc,
 bugprone-misplaced-widening-cast,
 bugprone-move-forwarding-reference,
 bugprone-multiple-statement-macro,
+bugprone-narrowing-conversions,
 bugprone-no-escape,
+bugprone-not-null-terminated-result,
 bugprone-parent-virtual-call,
 bugprone-posix-return,
 bugprone-reserved-identifier,
+bugprone-signal-handler,
+bugprone-signed-char-misuse,
 bugprone-sizeof-container,
 bugprone-sizeof-expression,
 bugprone-spuriously-wake-up-functions,
+bugprone-standalone-empty,
 bugprone-string-constructor,
 bugprone-string-integer-assignment,
 bugprone-string-literal-with-embedded-nul,
+bugprone-stringview-nullptr,
 bugprone-suspicious-enum-usage,
 bugprone-suspicious-include,
 bugprone-suspicious-memset-usage,
@@ -60,16 +74,27 @@ cert-flp30-c,
 cert-msc50-cpp,
 cert-msc51-cpp,
 cert-str34-c,
+concurrency-mt-unsafe,
+concurrency-thread-canceltype-asynchronous,
 cppcoreguidelines-interfaces-global-init,
 cppcoreguidelines-narrowing-conversions,
 cppcoreguidelines-pro-type-member-init,
 cppcoreguidelines-pro-type-static-cast-downcast,
+cppcoreguidelines-pro-type-const-cast,
 cppcoreguidelines-slicing,
+cppcoreguidelines-noexcept-destructor,
+cppcoreguidelines-noexcept-move-operations,
+cppcoreguidelines-noexcept-swap,
+cppcoreguidelines-owning-memory,
+cppcoreguidelines-no-malloc,
+cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+cppcoreguidelines-pro-bounds-constant-array-index,
 google-default-arguments,
 google-explicit-constructor,
 google-runtime-operator,
 hicpp-exception-baseclass,
 hicpp-multiway-paths-covered,
+misc-const-correctness,
 misc-misplaced-const,
 misc-new-delete-overloads,
 misc-no-recursion,
@@ -95,14 +120,17 @@ modernize-shrink-to-fit,
 modernize-unary-static-assert,
 modernize-use-auto,
 modernize-use-bool-literals,
+modernize-use-constraints,
 modernize-use-emplace,
 modernize-use-equals-default,
 modernize-use-equals-delete,
+modernize-use-nodiscard,
 modernize-use-noexcept,
 modernize-use-nullptr,
 modernize-use-override,
 modernize-use-transparent-functors,
 modernize-use-uncaught-exceptions,
+modernize-use-using,
 mpi-buffer-deref,
 mpi-type-mismatch,
 openmp-use-default-none,
@@ -115,18 +143,21 @@ performance-inefficient-vector-operation,
 performance-move-const-arg,
 performance-move-constructor-init,
 performance-no-automatic-move,
+performance-no-int-to-ptr,
 performance-noexcept-move-constructor,
 performance-trivially-destructible,
 performance-type-promotion-in-math-fn,
 performance-unnecessary-copy-initialization,
 performance-unnecessary-value-param,
 portability-simd-intrinsics,
-readability-avoid-const-params-in-decls,
+readability-braces-around-statements,
 readability-const-return-type,
 readability-container-size-empty,
 readability-convert-member-functions-to-static,
 readability-delete-null-pointer,
 readability-deleted-default,
+readability-else-after-return,
+readability-implicit-bool-conversion,
 readability-inconsistent-declaration-parameter-name,
 readability-make-member-function-const,
 readability-misleading-indentation,
@@ -138,13 +169,17 @@ readability-redundant-function-ptr-dereference,
 readability-redundant-smartptr-get,
 readability-redundant-string-cstr,
 readability-redundant-string-init,
+readability-simplify-boolean-expr,
 readability-simplify-subscript-expr,
 readability-static-accessed-through-instance,
 readability-static-definition-in-anonymous-namespace,
 readability-string-compare,
 readability-uniqueptr-delete-release,
+readability-uppercase-literal-suffix,
 readability-use-anyofallof,
-readability-identifier-naming'
+readability-identifier-naming,
+clang-diagnostic-*,
+clang-analyzer-*'
 
 CheckOptions:
   - key: readability-identifier-naming.ClassCase
@@ -154,25 +189,31 @@ CheckOptions:
   - key: readability-identifier-naming.ClassMemberSuffix
     value: _
   - key: readability-identifier-naming.ConstexprVariableCase
-    value: CamelCase
+    value: lower_case
   - key: readability-identifier-naming.ConstexprVariablePrefix
-    value: k
+    value: ''
   - key: readability-identifier-naming.EnumCase
     value: CamelCase
   - key: readability-identifier-naming.EnumConstantCase
     value: CamelCase
   - key: readability-identifier-naming.EnumConstantPrefix
-    value: k
+    value: ''
   - key: readability-identifier-naming.FunctionCase
+    value: CamelCase
+  - key: readability-identifier-naming.MethodCase
+    value: CamelCase
+  - key: readability-identifier-naming.PublicMethodCase
+    value: CamelCase
+  - key: readability-identifier-naming.PrivateMethodCase
     value: CamelCase
   - key: readability-identifier-naming.GlobalConstantCase
     value: CamelCase
   - key: readability-identifier-naming.GlobalConstantPrefix
-    value: k
+    value: ''
   - key: readability-identifier-naming.StaticConstantCase
     value: CamelCase
   - key: readability-identifier-naming.StaticConstantPrefix
-    value: k
+    value: ''
   - key: readability-identifier-naming.StaticVariableCase
     value: lower_case
   - key: readability-identifier-naming.StaticVariablePrefix
@@ -203,3 +244,4 @@ CheckOptions:
     value: lower_case
   - key: readability-identifier-naming.IgnoreMainLikeFunctions
     value: 1
+
