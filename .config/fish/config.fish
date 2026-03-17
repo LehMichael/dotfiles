@@ -12,6 +12,10 @@ if test -f /opt/homebrew/bin/brew
     set -x HOMEBREW_BUNDLE_FILE ~/.config/homebrew/Brewfile
 end
 
+if test -f /home/linuxbrew/.linuxbrew/bin/brew
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv fish)"
+end
+
 if type -q go
     fish_add_path (go env GOPATH)/bin
 end
