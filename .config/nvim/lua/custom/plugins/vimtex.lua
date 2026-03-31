@@ -4,7 +4,11 @@ return {
     -- tag = "v2.15", -- uncomment to pin to a specific release
     init = function()
         -- VimTeX configuration goes here, e.g.
-        vim.g.vimtex_view_method = "sioyek"
+        -- vim.g.vimtex_view_method = "sioyek"
+        vim.g.vimtex_view_method = "skim"
+        vim.g.vimtex_view_skim_sync = 1
+        vim.g.vimtex_view_skim_activate = 1
         vim.g.vimtex_view_sioyek_exe = "/Applications/sioyek.app/Contents/MacOS/sioyek"
+        vim.g.vimtex_quickfix_open_on_warning = 0
     end,
 }
