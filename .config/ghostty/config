@@ -2,7 +2,7 @@
 theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 
 clipboard-read = allow
-clipboard-write = allow
+# clipboard-write = allow
 
 font-size = 14.5
 font-thicken = true
