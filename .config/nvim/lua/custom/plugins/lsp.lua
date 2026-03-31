@@ -97,7 +97,7 @@ return {
             }
 
             local wsl_proxy = "/home/michael/.config/nvim/clangd-wsl-proxy.py"
-            if vim.fn.filereadable(wsl_proxy) then
+            if vim.fn.filereadable(wsl_proxy) and vim.fn.has("wsl") == 1 then
                 servers.others.clangd.cmd = {
                     "python3",
                     wsl_proxy,
