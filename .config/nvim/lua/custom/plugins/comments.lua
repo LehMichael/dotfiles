@@ -5,7 +5,7 @@ return {
             -- add any options here
         },
     },
-    {
-        "JoosepAlviste/nvim-ts-context-commentstring",
-    },
+    -- {
+    --     "JoosepAlviste/nvim-ts-context-commentstring",
+    -- },
 }
