@@ -37,40 +37,21 @@ vim.opt.mouse = "a"
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
--- vim.opt.clipboard = 'unnamedplus'
-if os.getenv("SSH_TTY") then
-    vim.api.nvim_create_autocmd("VimLeave", {
-        callback = function()
-            io.write("\27[>4;m")
+vim.g.clipboard = {
+    name = "osc52",
+    copy = {
+        ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+        ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+    },
+    paste = {
+        ["+"] = function()
+            return { vim.fn.getreg('"') }
         end,
-    })
-
-    local function copy(lines, _)
-        local str = table.concat(lines, "\n")
-        local base64 = vim.base64.encode(str)
-        local osc52 = string.format("\27]52;c;%s\27\\", base64)
-        io.stderr:write(osc52)
-    end
-
-    vim.g.clipboard = {
-        name = "osc52-manual",
-        copy = {
-            ["+"] = copy,
-            ["*"] = copy,
-        },
-        paste = {
-            ["+"] = function()
-                return { vim.fn.getreg("+") }
-            end,
-            ["*"] = function()
-                return { vim.fn.getreg("*") }
-            end,
-        },
-    }
-end
+        ["*"] = function()
+            return { vim.fn.getreg('"') }
+        end,
+    },
+}
 
 vim.opt.wrap = false
 vim.opt.linebreak = true

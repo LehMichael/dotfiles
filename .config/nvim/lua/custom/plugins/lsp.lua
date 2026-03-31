@@ -10,9 +10,10 @@ return {
         "nanotee/sqls.nvim",
     },
     config = function()
-        -- vim.lsp.set_log_level(vim.lsp.log_levels.DEBUG)
-        -- vim.lsp.set_log_level(vim.lsp.log_levels.WARN)
-        vim.lsp.set_log_level(vim.lsp.log_levels.OFF)
+        -- vim.lsp.log.set_level(vim.lsp.log_levels.DEBUG)
+        -- vim.lsp.log.set_level(vim.lsp.log_levels.WARN)
+        vim.lsp.log.set_level(vim.lsp.log_levels.ERROR)
+        -- vim.lsp.log.set_level(vim.lsp.log_levels.OFF)
 
         vim.api.nvim_create_autocmd("LspAttach", {
             group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
@@ -79,8 +80,8 @@ return {
                     "--offset-encoding=utf-16",
                     "--background-index",
                     "--clang-tidy",
-		    "--header-insertion=never",
-		    "--query-driver=/usr/bin/clang++,/usr/bin/c++,/usr/bin/clang",
+                    "--header-insertion=never",
+                    "--query-driver=/usr/bin/clang++,/usr/bin/c++,/usr/bin/clang",
                 },
                 settings = {
                     clangd = {
@@ -94,6 +95,18 @@ return {
                     },
                 },
             }
+
+            local wsl_proxy = "/home/michael/.config/nvim/clangd-wsl-proxy.py"
+            if vim.fn.filereadable(wsl_proxy) and vim.fn.has("wsl") == 1 then
+                servers.others.clangd.cmd = {
+                    "python3",
+                    wsl_proxy,
+                    "--offset-encoding=utf-16",
+                    "--background-index",
+                    "--clang-tidy",
+                    "--header-insertion=never",
+                }
+            end
         end
 
         local has_tailwind = function()
