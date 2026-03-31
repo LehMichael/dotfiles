@@ -34,6 +34,7 @@ local conform = { -- Auto
             -- javascript = { { "prettierd", "prettier" } },
             sql = { "sqlfmt" },
             templ = { "templ" },
+            tex = { "latexindent" },
         },
         formatters = {},
     },
