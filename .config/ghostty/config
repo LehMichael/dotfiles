@@ -8,7 +8,7 @@ font-size = 14.5
 font-thicken = true
 
 macos-titlebar-style = tabs
-# macos-option-as-alt = true
+macos-option-as-alt = left
 
 mouse-hide-while-typing = true
 scrollback-limit = 1000000
