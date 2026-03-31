@@ -11,7 +11,7 @@ return {
             hidden = true,
         },
         files = {
-            fd_opts = [[--color=never --hidden --type f --type l --exclude .git --exclude node_modules]],
+            -- fd_opts = [[--color=never --hidden --type f --type l --exclude .git --exclude node_modules --ignore-vcs]],
         },
     },
     init = function()
