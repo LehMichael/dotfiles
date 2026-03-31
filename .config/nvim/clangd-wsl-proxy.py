@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import subprocess, sys, os, threading, re
 
-CLANGD = r"/mnt/c/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clangd.exe"
+CLANGD = r"/mnt/c/clang+llvm-22.1.1-x86_64-pc-windows-msvc/bin/clangd.exe"
 WSL   = "file:///mnt/c/"
 WIN   = "file:///C:/"
 
