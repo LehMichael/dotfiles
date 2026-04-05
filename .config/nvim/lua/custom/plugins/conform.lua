@@ -137,8 +137,16 @@ local masonconform = {
     config = function()
         local ignore_install = {}
 
-        if vim.fn.executable("clang-format") == 1 then
-            table.insert(ignore_install, "clang-format")
+        ---@diagnostic disable-next-line: unused-local
+        for k, v in pairs(conform.opts.formatters_by_ft) do
+            -- vim.print("key", k)
+            -- vim.print("value", v)
+            ---@diagnostic disable-next-line: unused-local
+            for i, vv in ipairs(v) do
+                if vim.fn.executable(vv) == 1 then
+                    table.insert(ignore_install, vv)
+                end
+            end
         end
 
         require("mason-conform").setup({ ignore_install = ignore_install })
