@@ -76,7 +76,8 @@ vim.opt.updatetime = 250
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
 vim.opt.timeoutlen = 300
-vim.opt.ttimeoutlen = 0
+local is_remote = vim.env.SSH_TTY ~= nil or vim.env.SSH_CLIENT ~= nil
+vim.opt.ttimeoutlen = is_remote and 50 or 0
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
