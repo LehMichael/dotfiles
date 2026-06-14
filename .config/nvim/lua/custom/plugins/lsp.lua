@@ -58,7 +58,14 @@ return {
                     },
                 },
             },
-            others = {},
+            others = {
+                ols = {
+                    cmd = { "/mnt/c/odin/ols/ols-x86_64-pc-windows-msvc.exe" },
+                    settings = {
+                        odin_command = "/mnt/c/odin/dist/odin.exe",
+                    },
+                },
+            },
         }
 
         if vim.fn.executable("cargo") then

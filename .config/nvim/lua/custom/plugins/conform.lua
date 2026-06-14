@@ -127,6 +127,15 @@ if vim.fn.executable("node") == 1 then
     }
 end
 
+conform.opts.formatters_by_ft.odin = { "odinfmt" }
+conform.opts.formatters.odinfmt = {
+    -- Change where to find the command if it isn't in your path.
+    command = "/mnt/c/odin/ols/odinfmt-x86_64-pc-windows-msvc.exe",
+    args = { "-stdin" },
+    stdin = true,
+    ignore_install = true,
+}
+
 local masonconform = {
     "zapling/mason-conform.nvim",
     dependencies = {
@@ -144,6 +153,10 @@ local masonconform = {
             ---@diagnostic disable-next-line: unused-local
             for i, vv in ipairs(v) do
                 if vim.fn.executable(vv) == 1 then
+                    table.insert(ignore_install, vv)
+                end
+
+                if conform.opts.formatters[vv] ~= nil and conform.opts.formatters[vv] then
                     table.insert(ignore_install, vv)
                 end
             end
