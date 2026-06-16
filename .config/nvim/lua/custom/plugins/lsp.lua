@@ -50,6 +50,8 @@ return {
                         diagnostics = { disable = { "missing-fields" } },
                     },
                 },
+
+                texlab = {},
             },
             typos_lsp = {
                 init_options = {

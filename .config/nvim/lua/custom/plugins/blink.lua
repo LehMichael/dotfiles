@@ -4,7 +4,10 @@ return {
     -- dependencies = {
     --     { "L3MON4D3/LuaSnip", version = "v2.*" },
     -- },
-    dependencies = "rafamadriz/friendly-snippets",
+    dependencies = {
+        { "L3MON4D3/LuaSnip", version = "v2.*" },
+        "rafamadriz/friendly-snippets",
+    },
 
     -- use a release tag to download pre-built binaries
     version = "*",
@@ -18,7 +21,7 @@ return {
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
-        -- snippets = { preset = "luasnip" },
+        snippets = { preset = "luasnip" },
         -- 'default' for mappings similar to built-in completion
         -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
         -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
@@ -97,4 +100,9 @@ return {
         },
     },
     opts_extend = { "sources.default" },
+
+    config = function(_, opts)
+        require("luasnip.loaders.from_vscode").lazy_load()
+        require("blink.cmp").setup(opts)
+    end,
 }

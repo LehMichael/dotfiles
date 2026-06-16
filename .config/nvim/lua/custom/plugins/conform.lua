@@ -35,7 +35,7 @@ local conform = { -- Auto
             sql = { "sqlfmt" },
             templ = { "templ" },
             json = { "jq" },
-            tex = { "latexindent" },
+            -- tex = { "latexindent" },
         },
         formatters = {},
     },
