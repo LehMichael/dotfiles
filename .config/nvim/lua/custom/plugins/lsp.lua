@@ -38,38 +38,39 @@ return {
             vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities())
 
         local servers = {
-            mason = {
-                templ = {},
+            templ = {},
 
-                lua_ls = {
-                    settings = {
-                        Lua = {
-                            completion = {
-                                callSnippet = "Replace",
-                            },
-                            hint = { enable = true },
-                            diagnostics = { disable = { "missing-fields" } },
+            lua_ls = {
+                settings = {
+                    Lua = {
+                        completion = {
+                            callSnippet = "Replace",
                         },
-                    },
-                },
-                typos_lsp = {
-                    init_options = {
-                        diagnosticSeverity = "Info",
+                        hint = { enable = true },
+                        diagnostics = { disable = { "missing-fields" } },
                     },
                 },
             },
-            others = {
-                ols = {
-                    cmd = { "/mnt/c/odin/ols/ols-x86_64-pc-windows-msvc.exe" },
-                    settings = {
-                        odin_command = "/mnt/c/odin/dist/odin.exe",
-                    },
+            typos_lsp = {
+                init_options = {
+                    diagnosticSeverity = "Info",
                 },
             },
+            ols = {},
         }
 
+        if vim.fn.has("windows") then
+            servers.ols = {
+                cmd = { "c:/odin/ols/ols-x86_64-pc-windows-msvc.exe" },
+                settings = {
+                    odin_command = "c:/odin/dist/odin.exe",
+                },
+                mason = false,
+            }
+        end
+
         if vim.fn.executable("cargo") then
-            servers.mason.rust_analyzer = {
+            servers.rust_analyzer = {
                 settings = {
                     ["rust-analyzer"] = {
                         check = {
@@ -81,7 +82,7 @@ return {
         end
 
         if vim.fn.executable("clangd") then
-            servers.others.clangd = {
+            servers.clangd = {
                 cmd = {
                     "clangd",
                     "--offset-encoding=utf-16",
@@ -101,11 +102,12 @@ return {
                         fallbackFlags = { "-std=c++20" },
                     },
                 },
+                mason = false,
             }
 
             local wsl_proxy = "/home/michael/.config/nvim/clangd-wsl-proxy.py"
             if vim.fn.filereadable(wsl_proxy) and vim.fn.has("wsl") == 1 then
-                servers.others.clangd.cmd = {
+                servers.clangd.cmd = {
                     "python3",
                     wsl_proxy,
                     "--offset-encoding=utf-16",
@@ -133,29 +135,29 @@ return {
         end
 
         if vim.fn.executable("sourcekit-lsp") == 1 then
-            servers.others.sourcekit = {
-
+            servers.sourcekit = {
                 filetypes = { "swift" },
+                mason = false,
             }
         end
 
         if vim.fn.executable("node") == 1 then
             if has_tailwind() then
-                servers.mason.tailwindcss = {}
+                servers.tailwindcss = {}
             else
-                servers.mason.cssls = {}
+                servers.cssls = {}
             end
 
-            servers.mason.html = {
+            servers.html = {
                 filetypes = { "html", "handlebars", "hbs" },
             }
 
-            servers.mason.vue_ls = {}
+            servers.vue_ls = {}
             local vue_language_server_path = vim.fn.expand(
                 "$MASON/packages/vue-language-server/node_modules/@vue/language-server"
             )
 
-            servers.mason.ts_ls = {
+            servers.ts_ls = {
                 settings = {
                     complete_function_calls = true,
                     -- vtsls = {
@@ -200,13 +202,13 @@ return {
                     "vue",
                 },
             }
-            servers.mason.eslint = {}
-            servers.mason.jsonls = {}
-            servers.mason.pyright = {}
+            servers.eslint = {}
+            servers.jsonls = {}
+            servers.pyright = {}
         end
 
         if vim.fn.executable("go") == 1 then
-            servers.mason.gopls = {
+            servers.gopls = {
                 settings = {
                     gopls = {
                         hints = {
@@ -247,12 +249,18 @@ return {
         end
 
         if vim.fn.executable("zig") then
-            servers.mason.zls = {}
+            servers.zls = {}
         end
 
         require("mason").setup()
 
-        local ensure_installed = vim.tbl_keys(servers.mason or {})
+        local ensure_installed = {}
+        for k, v in pairs(servers) do
+            if v.mason == nil or v.mason == true then
+                ensure_installed[k] = v
+            end
+        end
+        vim.print(ensure_installed)
 
         require("mason-lspconfig").setup({
             ensure_installed = ensure_installed,
@@ -265,7 +273,7 @@ return {
         --
         --     require("lspconfig")[key].setup(server)
         -- end
-        for server, config in pairs(vim.tbl_extend("keep", servers.mason, servers.others)) do
+        for server, config in pairs(servers) do
             if not vim.tbl_isempty(config) then
                 vim.lsp.config(server, config)
             end

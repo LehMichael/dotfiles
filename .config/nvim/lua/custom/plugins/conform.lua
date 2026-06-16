@@ -129,12 +129,15 @@ end
 
 conform.opts.formatters_by_ft.odin = { "odinfmt" }
 conform.opts.formatters.odinfmt = {
-    -- Change where to find the command if it isn't in your path.
-    command = "/mnt/c/odin/ols/odinfmt-x86_64-pc-windows-msvc.exe",
     args = { "-stdin" },
     stdin = true,
     ignore_install = true,
 }
+
+if vim.fn.has("windows") then
+    -- Change where to find the command if it isn't in your path.
+    conform.opts.formatters.odinfmt.command = "c:/odin/ols/odinfmt-x86_64-pc-windows-msvc.exe"
+end
 
 local masonconform = {
     "zapling/mason-conform.nvim",
